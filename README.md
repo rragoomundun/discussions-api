@@ -20,5 +20,5 @@ RATE_LIMIT=100
 
 
 # The application frontend url
-APP_URL
+APP_URL=http://localhost:4200
 ```
