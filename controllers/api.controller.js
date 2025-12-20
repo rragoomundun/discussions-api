@@ -21,12 +21,4 @@ const getStatus = (req, res, next) => {
   });
 };
 
-const test = (req, res, next) => {
-  console.log(req.body);
-  console.log(req.query);
-  console.log(req.headers);
-  console.log(req.params);
-  res.status(httpStatus.OK).end();
-};
-
-export { getStatus, test };
+export { getStatus };
