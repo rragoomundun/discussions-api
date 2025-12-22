@@ -7,8 +7,12 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import rateLimit from 'express-rate-limit';
 
+import setupDBAssociations from './models/setupDBAssociations.js';
+
 import notFoundMiddleware from './middlewares/notFound.middleware.js';
 import errorMiddleware from './middlewares/error.middleware.js';
+
+setupDBAssociations();
 
 const app = express();
 
