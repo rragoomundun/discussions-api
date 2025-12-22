@@ -84,3 +84,7 @@ npm run gendoc
 ```
 npm run start
 ```
+
+- Version: 0.2
+- License: MIT
+- Author: Raphael Ragoomundun
