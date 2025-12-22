@@ -5,7 +5,7 @@
   "title": "Discussions API",
   "url": "http://localhost:5000",
   "sampleUrl": "http://localhost:5000",
-  "order": ["API"],
+  "order": ["API", "Site", "SiteIsNew"],
   "template": {
     "forceLanguage": "en",
     "withCompare": false,
