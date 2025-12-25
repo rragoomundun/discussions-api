@@ -57,4 +57,19 @@ const loginValidator = validation([
   body('password').notEmpty().withMessage('EMPTY')
 ]);
 
-export { registerValidator, loginValidator };
+const forgotPasswordValidator = validation([
+  body('email')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .isEmail()
+    .withMessage('INVALID_EMAIL')
+    .custom(async (email) => {
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        throw new Error('EMAIL_NOT_FOUND');
+      }
+    })
+]);
+
+export { registerValidator, loginValidator, forgotPasswordValidator };
