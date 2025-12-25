@@ -123,6 +123,52 @@ const registerConfirm = async (req, res, next) => {
   sendTokenResponse(userId, httpStatus.OK, res);
 };
 
+/**
+ * @api {POST} /auth/login Login
+ * @apiGroup Auth
+ * @apiName AuthLogin
+ * 
+ * @apiDescription Login a user.
+ * 
+ * @apiBody {String} name User's name
+ * @apiBody {String} password User's password
+ * 
+ * @apiParamExample {json} Body Example
+ * {
+ *   "name": "Tom Apollo",
+ *   "password": "pfs83a01jH;B"
+ * }
+ * 
+ * @apiSuccess (Success (200)) {String} token JWT token
+ * @apiSuccessExample Success Example
+ * {
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNmY0MDQ1MzVlNzU3NWM1NGExNTMyNyIsImlhdCI6MTU4NDM0OTI1MywiZXhwIjoxNTg2OTQxMjUzfQ.2f59_zRuYVXADCQWnQb6mG8NG3zulj12HZCgoIdMEfw"
+ * }
+
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) INVALID The data entered is invalid
+ * @apiError (Error (401)) UNCONFIRMED The account is unconfirmed
+ *
+ * @apiPermission Public
+ */
+const login = async (req, res, next) => {
+  const { name, password } = req.body;
+
+  const user = await User.findOne({ where: { name } });
+
+  if (!user || !(await user.verifyPassword(password, user.password))) {
+    return next(new ErrorResponse('Data entered invalid', httpStatus.UNAUTHORIZED, 'INVALID'));
+  }
+
+  const token = await Token.findOne({ where: { user_id: user.id, type: 'register-confirm' } });
+
+  if (token) {
+    return next(new ErrorResponse('Account unconfirmed', httpStatus.UNAUTHORIZED, 'UNCONFIRMED'));
+  }
+
+  sendTokenResponse(user.id, httpStatus.OK, res);
+};
+
 // Create token from model, create cookie, and send response
 const sendTokenResponse = async (userId, statusCode, res) => {
   const user = await User.findOne({ where: { id: userId } });
@@ -137,4 +183,4 @@ const sendTokenResponse = async (userId, statusCode, res) => {
   res.status(statusCode).cookie('token', token, options).json({ token });
 };
 
-export { register, registerConfirm };
+export { register, registerConfirm, login };
