@@ -4,4 +4,8 @@ const deleteUser = async (userId) => {
   await User.destroy({ where: { id: userId } });
 };
 
-export default { deleteUser };
+const deleteUsers = async (userIds) => {
+  await User.destroy({ where: { id: userIds } });
+};
+
+export default { deleteUser, deleteUsers };

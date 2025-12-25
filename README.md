@@ -60,6 +60,9 @@ FROM_EMAIL=noreply@example.com
 # Reply email
 REPLY_EMAIL=contact@example.com
 
+
+# Clear token cron execution date
+CLEAR_TOKENS_CRON_DATE=* * * * *
 ```
 
 ## Migrations
