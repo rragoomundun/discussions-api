@@ -5,7 +5,7 @@
   "title": "Discussions API",
   "url": "http://localhost:5000",
   "sampleUrl": "http://localhost:5000",
-  "order": ["API", "Config", "ConfigExists", "Auth", "AuthRegister"],
+  "order": ["API", "Config", "ConfigExists", "Auth", "AuthRegister", "Admin", "AdminExists"],
   "template": {
     "forceLanguage": "en",
     "withCompare": false,
