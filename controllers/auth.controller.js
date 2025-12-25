@@ -4,7 +4,6 @@ import User from '../models/User.js';
 import Token from '../models/Token.js';
 
 import dbUtil from '../utils/db.util.js';
-import configUtil from '../utils/config.util.js';
 import userUtil from '../utils/user.util.js';
 import mailUtil from '../utils/mail.util.js';
 
@@ -37,7 +36,7 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  */
 const register = async (req, res, next) => {
   const { email, password } = req.body;
-  const role = configUtil.exists() ? 'admin' : 'regular';
+  const role = (await User.findOne({ where: { role: 'admin' } })) ? 'regular' : 'admin';
   let { name } = req.body;
   let result;
 
