@@ -6,19 +6,16 @@ import User from '../models/User.js';
 import Config from '../models/Config.js';
 
 const transporterConfig = {
-  host: 'email-smtp.eu-west-1.amazonaws.com',
-  port: 587,
-  secure: false,
+  host: process.env.TRANSPORTER_HOST,
+  port: Number(process.env.TRANSPORTER_PORT),
+  secure: process.env.TRANSPORTER_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD
   }
 };
 
-if (process.env.ENV === 'prod') {
-  transporterConfig.secure = true;
-}
-
+console.log(transporterConfig);
 const transporter = nodemailer.createTransport(transporterConfig);
 
 const send = async (options) => {
@@ -30,6 +27,9 @@ const send = async (options) => {
 
   const mailData = JSON.parse(fs.readFileSync(`mails/${config.lang}/definitions/${mail}.json`));
   const templateName = mailData.template;
+  let haveReplyTo = options.haveReplyTo;
+  let replyTo;
+  let fromEmail = options.fromEmail;
   let templateOptions = options.templateOptions;
 
   if (!templateOptions) {
@@ -41,6 +41,14 @@ const send = async (options) => {
   templateOptions.forumTitle = config.title;
   templateOptions.year = new Date().getFullYear();
 
+  if (haveReplyTo) {
+    replyTo = process.env.REPLY_EMAIL;
+  }
+
+  if (!fromEmail) {
+    fromEmail = process.env.FROM_EMAIL;
+  }
+
   const template =
     fs.readFileSync(`mails/${config.lang}/views/header.html`, 'utf-8') +
     fs.readFileSync(`mails/${config.lang}/views/${templateName}.html`, 'utf-8') +
@@ -48,8 +56,8 @@ const send = async (options) => {
 
   const message = {
     to,
-    replyTo: process.env.REPLY_EMAIL,
-    from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
+    replyTo,
+    from: `${process.env.FROM_NAME} <${fromEmail}>`,
     html: mustache.render(template, templateOptions),
     subject: templateOptions.title
   };

@@ -64,11 +64,13 @@ const register = async (req, res, next) => {
     await mailUtil.send({
       mail: 'registration',
       userId: result.user.id,
+      haveReplyTo: false,
       templateOptions: {
         confirmationLink: `${process.env.APP_URL}/auth/register/confirm/${result.token}`
       }
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     await userUtil.deleteUser(result.user.id);
     return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
   }

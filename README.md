@@ -40,6 +40,26 @@ SMTP_USER=username
 
 # SMTP password
 SMTP_PASSWORD=password
+
+# Transporter host
+TRANSPORTER_HOST=smtp.server.com
+
+# Transporter port
+TRANSPORTER_PORT=587
+
+# Transporter secure
+TRANSPORTER_SECURE=false
+
+
+# From name
+FROM_NAME=Name
+
+# From email
+FROM_EMAIL=noreply@example.com
+
+# Reply email
+REPLY_EMAIL=contact@example.com
+
 ```
 
 ## Migrations
