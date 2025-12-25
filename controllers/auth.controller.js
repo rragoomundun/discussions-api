@@ -189,6 +189,19 @@ const logout = async (req, res, next) => {
     .end();
 };
 
+/**
+ * @api {GET} /auth/authorized Is Authorized
+ * @apiGroup Auth
+ * @apiName AuthAuthorized
+ *
+ * @apiDescription Checks if the user token is valid.
+ *
+ * @apiPermission Private
+ */
+const authorized = (req, res, next) => {
+  res.status(httpStatus.OK).end();
+};
+
 // Create token from model, create cookie, and send response
 const sendTokenResponse = async (userId, statusCode, res) => {
   const user = await User.findOne({ where: { id: userId } });
@@ -203,4 +216,4 @@ const sendTokenResponse = async (userId, statusCode, res) => {
   res.status(statusCode).cookie('token', token, options).json({ token });
 };
 
-export { register, registerConfirm, login, logout };
+export { register, registerConfirm, login, logout, authorized };
