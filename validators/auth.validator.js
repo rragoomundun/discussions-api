@@ -9,11 +9,17 @@ const registerValidator = validation([
     .notEmpty()
     .withMessage('EMPTY')
     .custom(async (value) => {
-      const nameExists = await User.findOne({ name: value });
+      value = value.trim();
 
-      if (nameExists) {
-        throw new Error('NAME_IN_USE');
+      if (value === 0) {
+        throw new Error('EMPTY');
       }
+
+      // const nameExists = await User.findOne({ where: { name: value } });
+
+      // if (nameExists) {
+      //   throw new Error('NAME_IN_USE');
+      // }
     }),
   body('email')
     .notEmpty()
@@ -21,11 +27,10 @@ const registerValidator = validation([
     .isEmail()
     .withMessage('NOT_EMAIL')
     .custom(async (value) => {
-      const emailExists = await User.findOne({ email: value });
-
-      if (emailExists) {
-        throw new Error('EMAIL_IN_USE');
-      }
+      // const emailExists = await User.findOne({ where: { email: value } });
+      // if (emailExists) {
+      //   throw new Error('EMAIL_IN_USE');
+      // }
     }),
   body('password')
     .notEmpty()

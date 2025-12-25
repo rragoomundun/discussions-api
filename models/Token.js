@@ -27,14 +27,17 @@ const Token = dbUtil.define(
   },
   {
     timestamps: false,
-    tableName: 'tokens',
-    hooks: {
-      beforeCreate: (token) => {
-        token.value = cryptUtil.getDigestHash(cryptUtil.getToken());
-        token.expire = Date.now() + 1000 * 60 * 60; // Expires in 1 hour
-      }
-    }
+    tableName: 'tokens'
   }
 );
+
+Token.prototype.generateToken = function () {
+  const tokenDecrypted = cryptUtil.getToken();
+
+  this.value = cryptUtil.getDigestHash(tokenDecrypted);
+  this.expire = Date.now() + 1000 * 60 * 60; // Expires in 1 hour
+
+  return tokenDecrypted;
+};
 
 export default Token;

@@ -46,12 +46,12 @@ app.use(helmet());
 app.use(hpp());
 
 import apiRoutes from './routes/api.route.js';
-import siteRoutes from './routes/site.route.js';
+import configRoutes from './routes/config.route.js';
 import authRoutes from './routes/auth.route.js';
 
 // Mount routers
 app.use('/api', apiRoutes);
-app.use('/site', siteRoutes);
+app.use('/config', configRoutes);
 app.use('/auth', authRoutes);
 
 // Limit the number of requests per minute in prod mode

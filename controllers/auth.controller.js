@@ -4,7 +4,9 @@ import User from '../models/User.js';
 import Token from '../models/Token.js';
 
 import dbUtil from '../utils/db.util.js';
-import siteUtil from '../utils/site.util.js';
+import configUtil from '../utils/config.util.js';
+import userUtil from '../utils/user.util.js';
+import mailUtil from '../utils/mail.util.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -18,14 +20,14 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiBody {String} name User's name
  * @apiBody {String} email User's email
  * @apiBody {String{12..}} password User's password
- * @apiBody {String{12..}} repeatedPassword The repeated password
+ * @apiBody {String{12..}} passwordConfirmation The repeated password
  *
  * @apiParamExample {json} Body Example
  * {
  *   "name": "Tom Apollo",
  *   "email": "tom.apollo@gmail.com",
  *   "password": "pfs83a01jH;B",
- *   "repeatedPassword": "pfs83a01jH;B"
+ *   "passwordConfirmation": "pfs83a01jH;B"
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
@@ -34,9 +36,12 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiPermission Public
  */
 const register = async (req, res, next) => {
-  const { name, email, password } = req.body;
-  const role = siteUtil.isNew() ? 'admin' : 'regular';
+  const { email, password } = req.body;
+  const role = configUtil.exists() ? 'admin' : 'regular';
+  let { name } = req.body;
   let result;
+
+  name = name.trim();
 
   try {
     result = await dbUtil.transaction(async (transaction) => {
@@ -45,27 +50,29 @@ const register = async (req, res, next) => {
         { type: 'register-confirm', value: 'empty', expire: Date.now(), user_id: user.id },
         { transaction }
       );
+      const tokenDecrypted = token.generateToken();
 
-      return { user, token };
+      await token.save({ transaction });
+
+      return { user, token: tokenDecrypted };
     });
   } catch {
     return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
   }
 
-  // Send confirmation e-mail
-  // try {
-  //   const mailOptions = {
-  //     mail: 'registration',
-  //     userId: result.user.id,
-  //     templateOptions: {
-  //       confirmationLink: `${process.env.APP_URL}/auth/register/confirm/${result.token.value}`
-  //     }
-  //   };
-  //   await mailUtil.send(mailOptions);
-  // } catch {
-  //   await userUtil.deleteUser(result.user.id);
-  //   return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
-  // }
+  // Send registration e-mail
+  try {
+    await mailUtil.send({
+      mail: 'registration',
+      userId: result.user.id,
+      templateOptions: {
+        confirmationLink: `${process.env.APP_URL}/auth/register/confirm/${result.token}`
+      }
+    });
+  } catch {
+    await userUtil.deleteUser(result.user.id);
+    return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
+  }
 
   res.status(httpStatus.CREATED).end();
 };

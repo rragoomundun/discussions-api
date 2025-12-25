@@ -2,8 +2,8 @@ import { DataTypes } from 'sequelize';
 
 import dbUtil from '../utils/db.util.js';
 
-const ForumInfo = dbUtil.define(
-  'ForumInfo',
+const Config = dbUtil.define(
+  'Config',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -11,7 +11,8 @@ const ForumInfo = dbUtil.define(
       autoIncrement: true
     },
     title: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     logo: {
       type: DataTypes.STRING
@@ -30,15 +31,21 @@ const ForumInfo = dbUtil.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    lang: {
+      type: DataTypes.ENUM('en', 'fr'),
+      defaultValue: 'en',
+      allowNull: false
+    },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
+      allowNull: false
     }
   },
   {
     timestamps: false,
-    tableName: 'forum_infos'
+    tableName: 'configs'
   }
 );
 
-export default ForumInfo;
+export default Config;
