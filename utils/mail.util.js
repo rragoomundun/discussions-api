@@ -15,7 +15,6 @@ const transporterConfig = {
   }
 };
 
-console.log(transporterConfig);
 const transporter = nodemailer.createTransport(transporterConfig);
 
 const send = async (options) => {
