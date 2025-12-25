@@ -5,6 +5,7 @@ import Token from '../models/Token.js';
 
 import dbUtil from '../utils/db.util.js';
 import userUtil from '../utils/user.util.js';
+import adminUtil from '../utils/admin.util.js';
 import mailUtil from '../utils/mail.util.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
@@ -35,8 +36,16 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiPermission Public
  */
 const register = async (req, res, next) => {
+  const role = (await adminUtil.exists()) ? 'regular' : 'admin';
+  const adminUser = await User.findOne({ where: { role: 'admin' } });
+
+  if (role === 'admin' && adminUser) {
+    return next(
+      new ErrorResponse('Admin user exists but it is not confirmed yet', httpStatus.BAD_REQUEST, 'ADMIN_NOT_CONFIRMED')
+    );
+  }
+
   const { email, password } = req.body;
-  const role = (await User.findOne({ where: { role: 'admin' } })) ? 'regular' : 'admin';
   let { name } = req.body;
   let result;
 

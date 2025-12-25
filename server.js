@@ -48,11 +48,13 @@ app.use(hpp());
 import apiRoutes from './routes/api.route.js';
 import configRoutes from './routes/config.route.js';
 import authRoutes from './routes/auth.route.js';
+import adminRoutes from './routes/admin.route.js';
 
 // Mount routers
 app.use('/api', apiRoutes);
 app.use('/config', configRoutes);
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Limit the number of requests per minute in prod mode
 if (process.env.ENV === 'prod') {
