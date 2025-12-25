@@ -15,6 +15,7 @@
     "AuthLogin",
     "AuthLogout",
     "AuthForgotPassword",
+    "AuthResetPassword",
     "AuthAuthorized",
     "Admin",
     "AdminExists"
