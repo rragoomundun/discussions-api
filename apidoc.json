@@ -1,11 +1,25 @@
 {
   "name": "Discussions API",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Documentation for Discussions API",
   "title": "Discussions API",
   "url": "http://localhost:5000",
   "sampleUrl": "http://localhost:5000",
-  "order": ["API"],
+  "order": [
+    "API",
+    "Config",
+    "ConfigExists",
+    "Auth",
+    "AuthRegister",
+    "AuthRegisterConfirm",
+    "AuthLogin",
+    "AuthLogout",
+    "AuthForgotPassword",
+    "AuthResetPassword",
+    "AuthAuthorized",
+    "Admin",
+    "AdminExists"
+  ],
   "template": {
     "forceLanguage": "en",
     "withCompare": false,

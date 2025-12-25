@@ -46,9 +46,15 @@ app.use(helmet());
 app.use(hpp());
 
 import apiRoutes from './routes/api.route.js';
+import configRoutes from './routes/config.route.js';
+import authRoutes from './routes/auth.route.js';
+import adminRoutes from './routes/admin.route.js';
 
 // Mount routers
 app.use('/api', apiRoutes);
+app.use('/config', configRoutes);
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Limit the number of requests per minute in prod mode
 if (process.env.ENV === 'prod') {
@@ -63,6 +69,11 @@ if (process.env.ENV === 'prod') {
 // Errors
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
+
+// Crons
+import clearTokensCron from './crons/token.cron.js';
+
+clearTokensCron.clearTokens();
 
 app.listen(process.env.PORT, () => {
   console.log(`[OK] Server running in ${process.env.ENV} mode on port ${process.env.PORT}`.green);
