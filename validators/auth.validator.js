@@ -37,7 +37,7 @@ const registerValidator = validation([
     .notEmpty()
     .withMessage('EMPTY')
     .isLength({ min: 8 })
-    .withMessage('PASSWORD_MIN_LENGTH_8')
+    .withMessage('PASSWORD_MIN_LENGTH')
     .isStrongPassword()
     .withMessage('PASSWORD_NOT_STRONG'),
   body('passwordConfirmation')
@@ -72,4 +72,24 @@ const forgotPasswordValidator = validation([
     })
 ]);
 
-export { registerValidator, loginValidator, forgotPasswordValidator };
+const resetPasswordValidator = validation([
+  body('password')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .isLength({ min: 8 })
+    .withMessage('PASSWORD_MIN_LENGTH')
+    .isStrongPassword()
+    .withMessage('PASSWORD_NOT_STRONG'),
+  body('repeatedPassword')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('REPEATED_PASSWORD_NO_MATCH');
+      }
+
+      return true;
+    })
+]);
+
+export { registerValidator, loginValidator, forgotPasswordValidator, resetPasswordValidator };
