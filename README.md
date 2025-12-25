@@ -23,6 +23,43 @@ RATE_LIMIT=100
 
 # The application frontend url
 APP_URL=http://localhost:4200
+
+
+# JWT Token secret code
+JWT_SECRET=secret
+
+# JWT Token duration. On this example it will expire in 180 days
+JWT_EXPIRE=180d
+
+# JWT Token cookie duration. The value is in days.
+JWT_COOKIE_EXPIRE=180
+
+
+# SMTP user name
+SMTP_USER=username
+
+# SMTP password
+SMTP_PASSWORD=password
+
+# Transporter host
+TRANSPORTER_HOST=smtp.server.com
+
+# Transporter port
+TRANSPORTER_PORT=587
+
+# Transporter secure
+TRANSPORTER_SECURE=false
+
+
+# From name
+FROM_NAME=Name
+
+# From email
+FROM_EMAIL=noreply@example.com
+
+# Reply email
+REPLY_EMAIL=contact@example.com
+
 ```
 
 ## Migrations
