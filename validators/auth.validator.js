@@ -52,4 +52,9 @@ const registerValidator = validation([
     })
 ]);
 
-export { registerValidator };
+const loginValidator = validation([
+  body('name').notEmpty().withMessage('EMPTY'),
+  body('password').notEmpty().withMessage('EMPTY')
+]);
+
+export { registerValidator, loginValidator };
