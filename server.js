@@ -70,6 +70,11 @@ if (process.env.ENV === 'prod') {
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
+// Crons
+import clearTokensCron from './crons/token.cron.js';
+
+clearTokensCron.clearTokens();
+
 app.listen(process.env.PORT, () => {
   console.log(`[OK] Server running in ${process.env.ENV} mode on port ${process.env.PORT}`.green);
 });
