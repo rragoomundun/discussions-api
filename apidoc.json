@@ -13,6 +13,8 @@
     "AuthRegister",
     "AuthRegisterConfirm",
     "AuthLogin",
+    "AuthLogout",
+    "AuthAuthorized",
     "Admin",
     "AdminExists"
   ],
