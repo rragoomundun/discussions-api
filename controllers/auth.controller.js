@@ -180,7 +180,7 @@ const login = async (req, res, next) => {
  *
  * @apiParamExample {json} Body Example
  * {
- *   "email": "tom@apollo.gmail"
+ *   "email": "tom.apollo@gmail.com"
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
