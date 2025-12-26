@@ -9,6 +9,7 @@
     "API",
     "Config",
     "ConfigExists",
+    "ConfigInit",
     "Auth",
     "AuthRegister",
     "AuthRegisterConfirm",
