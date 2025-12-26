@@ -2,6 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import User from '../models/User.js';
 import Token from '../models/Token.js';
+import Config from '../models/Config.js';
 
 import dbUtil from '../utils/db.util.js';
 import userUtil from '../utils/user.util.js';
@@ -32,6 +33,8 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (400)) ADMIN_NOT_CONFIRMED Admin user exists but is not confirmed yet
+ * @apiError (Error (400)) CONFIG_NOT_SET Configuration not set
  * @apiError (Error (500)) ACCOUNT_CREATION Cannot create account
  *
  * @apiPermission Public
@@ -40,10 +43,20 @@ const register = async (req, res, next) => {
   const role = (await adminUtil.exists()) ? 'regular' : 'admin';
   const adminUser = await User.findOne({ where: { role: 'admin' } });
 
-  if (role === 'admin' && adminUser) {
-    return next(
-      new ErrorResponse('Admin user exists but it is not confirmed yet', httpStatus.BAD_REQUEST, 'ADMIN_NOT_CONFIRMED')
-    );
+  if (role === 'admin') {
+    if (adminUser) {
+      return next(
+        new ErrorResponse(
+          'Admin user exists but it is not confirmed yet',
+          httpStatus.BAD_REQUEST,
+          'ADMIN_NOT_CONFIRMED'
+        )
+      );
+    }
+
+    if ((await Config.count()) === 0) {
+      return next(new ErrorResponse('Configuration not set', httpStatus.BAD_REQUEST, 'CONFIG_NOT_SET'));
+    }
   }
 
   const { email, password } = req.body;
