@@ -17,11 +17,19 @@ const Config = dbUtil.define(
     logo: {
       type: DataTypes.STRING
     },
+    favicon: {
+      type: DataTypes.STRING
+    },
     description: {
       type: DataTypes.TEXT
     },
     meta: {
       type: DataTypes.TEXT
+    },
+    lang: {
+      type: DataTypes.ENUM('en', 'fr'),
+      defaultValue: 'en',
+      allowNull: false
     },
     show_title: {
       type: DataTypes.BOOLEAN,
@@ -30,11 +38,6 @@ const Config = dbUtil.define(
     show_logo: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    },
-    lang: {
-      type: DataTypes.ENUM('en', 'fr'),
-      defaultValue: 'en',
-      allowNull: false
     },
     created_at: {
       type: DataTypes.DATE,
