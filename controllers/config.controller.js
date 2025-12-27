@@ -13,7 +13,7 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  *
  * @apiDescription Check if the forum configuration exists.
  *
- * @apiSuccess (Success (200)) {Boolean} exists  Whether the configuration exists
+ * @apiSuccess (Success (200)) {Boolean} exists Whether the configuration exists
  * @apiSuccessExample Success Example
  * {
  *   "exists": true
@@ -66,4 +66,41 @@ const init = async (req, res, next) => {
   res.status(httpStatus.CREATED).end();
 };
 
-export { exists, init };
+/**
+ * @api {GET} /config Get
+ * @apiGroup Config
+ * @apiName ConfigGet
+ *
+ * @apiDescription Get the forum configuration.
+ *
+ * @apiSuccess (Success (200)) {String} title The forum title
+ * @apiSuccess (Success (200)) {String} logo The forum logo
+ * @apiSuccess (Success (200)) {String} favicon The forum favicon
+ * @apiSuccess (Success (200)) {String} description The forum description
+ * @apiSuccess (Success (200)) {String} meta The forum meta description
+ * @apiSuccess (Success (200)) {String} lang The forum language
+ * @apiSuccess (Success (200)) {Boolean} show_title Whether to show the title or no
+ * @apiSuccess (Success (200)) {Boolean} show_logo Whether to show the logo or no
+ * @apiSuccess (Success (200)) {Date} created_at The creation date of the forum
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "title": "Elevated Minds",
+ *   "logo": "http://localhost:5000/uploads/logo.jpg",
+ *   "favicon": "http://localhost:5000/uploads/favicon.ico",
+ *   "description": "Lorem ipsum...",
+ *   "meta": "Lorem ipsum",
+ *   "lang": "en",
+ *   "show_title": true,
+ *   "show_logo": true,
+ *   "created_at": "2025-12-27 12:50:32.667+04"
+ * }
+ *
+ * @apiPermission Public
+ */
+const get = async (req, res, next) => {
+  const config = await Config.findOne();
+  res.status(httpStatus.OK).json({ config });
+};
+
+export { exists, init, get };

@@ -10,6 +10,7 @@
     "Config",
     "ConfigExists",
     "ConfigInit",
+    "ConfigGet",
     "Auth",
     "AuthRegister",
     "AuthRegisterConfirm",
