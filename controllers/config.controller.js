@@ -3,6 +3,7 @@ import httpStatus from 'http-status-codes';
 import Config from '../models/Config.js';
 
 import configUtil from '../utils/config.util.js';
+import adminUtil from '../utils/admin.util.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -11,19 +12,22 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiGroup Config
  * @apiName ConfigExists
  *
- * @apiDescription Check if the forum configuration exists.
+ * @apiDescription Get exists information.
  *
- * @apiSuccess (Success (200)) {Boolean} exists Whether the configuration exists
+ * @apiSuccess (Success (200)) {Boolean} config  Whether the configuration exists
+ * @apiSuccess (Success (200)) {Boolean} admin Whether the admin exists
  * @apiSuccessExample Success Example
  * {
- *   "exists": true
+ *   "exists": true,
+ *   "admin": "false"
  * }
  *
  * @apiPermission Public
  */
 const exists = async (req, res, next) => {
   res.status(httpStatus.OK).json({
-    exists: await configUtil.exists()
+    config: await configUtil.exists(),
+    admin: await adminUtil.exists()
   });
 };
 
