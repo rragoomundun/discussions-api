@@ -16,9 +16,7 @@
     "AuthLogout",
     "AuthForgotPassword",
     "AuthResetPassword",
-    "AuthAuthorized",
-    "Admin",
-    "AdminExists"
+    "AuthAuthorized"
   ],
   "template": {
     "forceLanguage": "en",
