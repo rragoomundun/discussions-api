@@ -80,12 +80,12 @@ const resetPasswordValidator = validation([
     .withMessage('PASSWORD_MIN_LENGTH')
     .isStrongPassword()
     .withMessage('PASSWORD_NOT_STRONG'),
-  body('repeatedPassword')
+  body('passwordConfirmation')
     .notEmpty()
     .withMessage('EMPTY')
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error('REPEATED_PASSWORD_NO_MATCH');
+        throw new Error('PASSWORD_CONFIRMATION_NO_MATCH');
       }
 
       return true;

@@ -261,12 +261,12 @@ const forgotPassword = async (req, res, next) => {
  *
  * @apiParam {String} resetPasswordToken User's confirmation token
  * @apiBody {String{8..}} password User's new password
- * @apiBody {String{8...}} repeatedPassword The repeated password
+ * @apiBody {String{8...}} passwordConfirmation The repeated password
  *
  * @apiParamExample {json} Body Example
  * {
  *   "password": "J9u21k%cde1t",
- *   "repeatedPassword": "J9u21k%cde1t"
+ *   "passwordConfirmation": "J9u21k%cde1t"
  * }
  *
  * @apiSuccess (Success (200)) {String} token JWT token
