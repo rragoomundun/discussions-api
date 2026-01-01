@@ -11,6 +11,8 @@
     "ConfigExists",
     "ConfigInit",
     "ConfigGet",
+    "File",
+    "FileUpload",
     "Auth",
     "AuthRegister",
     "AuthRegisterConfirm",
