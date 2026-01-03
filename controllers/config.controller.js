@@ -81,7 +81,7 @@ const init = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} logo The forum logo
  * @apiSuccess (Success (200)) {String} favicon The forum favicon
  * @apiSuccess (Success (200)) {String} description The forum description
- * @apiSuccess (Success (200)) {String} meta The forum meta description
+ * @apiSuccess (Success (200)) {String} meta_description The forum meta description
  * @apiSuccess (Success (200)) {String} lang The forum language
  * @apiSuccess (Success (200)) {Boolean} show_title Whether to show the title or no
  * @apiSuccess (Success (200)) {Boolean} show_logo Whether to show the logo or no
@@ -93,7 +93,7 @@ const init = async (req, res, next) => {
  *   "logo": "http://localhost:5000/uploads/logo.jpg",
  *   "favicon": "http://localhost:5000/uploads/favicon.ico",
  *   "description": "Lorem ipsum...",
- *   "meta": "Lorem ipsum",
+ *   "meta_description": "Lorem ipsum",
  *   "lang": "en",
  *   "show_title": true,
  *   "show_logo": true,
@@ -107,4 +107,53 @@ const get = async (req, res, next) => {
   res.status(httpStatus.OK).json({ config });
 };
 
-export { exists, init, get };
+/**
+ * @api {PUT} /config Update
+ * @apiGroup Config
+ * @apiName ConfigUpdate
+ *
+ * @apiDescription Update the forum configuration.
+ *
+ * @apiBody {String} title The forum title
+ * @apiBody {String} logo The forum logo
+ * @apiBody {String} favicon The forum favicon
+ * @apiBody {String} description The forum description
+ * @apiBody {String} meta_description The forum meta description
+ * @apiBody {String="en,fr"} lang The forum language
+ * @apiBody {Boolean} show_title Whether to show the title or no
+ * @apiBody {Boolean} show_logo Whether to show the logo or no
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "title": "Elevated Minds",
+ *   "logo": "/uploads/forum/1767429510485-logo.jpg",
+ *   "favicon": "/uploads/forum/1767429536899-favicon.jpg",
+ *   "description": "Lorem ipsum...",
+ *   "meta_description": "Lorem ipsum",
+ *   "show_title": true,
+ *   "show_logo": true
+ * }
+ *
+ * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
+ *
+ * @apiPermission Private
+ */
+const update = async (req, res, next) => {
+  const { title, logo, favicon, description, meta_description, lang, show_title, show_logo } = req.body;
+  const config = await Config.findOne();
+
+  config.title = title;
+  config.logo = logo;
+  config.favicon = favicon;
+  config.description = description;
+  config.meta_description = meta_description;
+  config.lang = lang;
+  config.show_title = show_title;
+  config.show_logo = show_logo;
+
+  await config.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { exists, init, get, update };
