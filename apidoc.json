@@ -12,6 +12,7 @@
     "ConfigInit",
     "ConfigGet",
     "ConfigUpdate",
+    "ConfigUpdateBottomLinks",
     "File",
     "FileUpload",
     "FileDelete",

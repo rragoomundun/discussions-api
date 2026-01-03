@@ -1,6 +1,8 @@
 import httpStatus from 'http-status-codes';
+import { Op } from 'sequelize';
 
 import Config from '../models/Config.js';
+import BottomLink from '../models/BottomLink.js';
 
 import configUtil from '../utils/config.util.js';
 import adminUtil from '../utils/admin.util.js';
@@ -156,4 +158,59 @@ const update = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { exists, init, get, update };
+/**
+ * @api {PUT} /config/bottom-links Update Bottom Links
+ * @apiGroup Config
+ * @apiName ConfigUpdateBottomLinks
+ *
+ * @apiDescription Update the forum bottom links.
+ *
+ * @apiBody {Number} id The link id
+ * @apiBody {String} name The link name
+ * @apiBody {String} link The link
+ * @apiBody {Number} index The link position
+ *
+ * @apiParamExample {json} Body Example
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "About",
+ *     "link": "https://website.com/about",
+ *     "index": 0
+ *   },
+ *   {
+ *     "id": null,
+ *     "name": "Terms",
+ *     "link": "https://website.com/terms",
+ *     "index": 1
+ *   },
+ * ]
+ *
+ * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
+ *
+ * @apiPermission Private
+ */
+const updateBottomLinks = async (req, res, next) => {
+  const linkIds = req.body.filter((item) => [null, undefined].includes(item.id) === false).map((item) => item.id);
+
+  await BottomLink.destroy({ where: { id: { [Op.notIn]: linkIds } } });
+
+  for (const item of req.body) {
+    if ([undefined, null].includes(item.id)) {
+      await BottomLink.create(item);
+    } else {
+      const { id, name, link, index } = item;
+      const linkObj = await BottomLink.findOne({ where: id });
+
+      linkObj.name = name;
+      linkObj.link = link;
+      linkObj.index = index;
+
+      await linkObj.save();
+    }
+  }
+
+  res.status(httpStatus.OK).end();
+};
+
+export { exists, init, get, update, updateBottomLinks };
