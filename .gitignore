@@ -3,3 +3,6 @@ node_modules/*
 
 migrations/config/config.json
 migrations/node_modules/*
+
+public/uploads/forum/*
+public/uploads/user/*
