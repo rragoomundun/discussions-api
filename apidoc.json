@@ -13,9 +13,6 @@
     "ConfigGet",
     "ConfigUpdate",
     "ConfigUpdateBottomLinks",
-    "File",
-    "FileUpload",
-    "FileDelete",
     "Auth",
     "AuthRegister",
     "AuthRegisterConfirm",
@@ -23,7 +20,12 @@
     "AuthLogout",
     "AuthForgotPassword",
     "AuthResetPassword",
-    "AuthAuthorized"
+    "AuthAuthorized",
+    "Forum",
+    "ForumUpdateForum",
+    "File",
+    "FileUpload",
+    "FileDelete"
   ],
   "template": {
     "forceLanguage": "en",
