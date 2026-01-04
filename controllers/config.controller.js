@@ -79,34 +79,62 @@ const init = async (req, res, next) => {
  *
  * @apiDescription Get the forum configuration.
  *
- * @apiSuccess (Success (200)) {String} title The forum title
- * @apiSuccess (Success (200)) {String} logo The forum logo
- * @apiSuccess (Success (200)) {String} favicon The forum favicon
- * @apiSuccess (Success (200)) {String} description The forum description
- * @apiSuccess (Success (200)) {String} meta_description The forum meta description
- * @apiSuccess (Success (200)) {String} lang The forum language
- * @apiSuccess (Success (200)) {Boolean} show_title Whether to show the title or no
- * @apiSuccess (Success (200)) {Boolean} show_logo Whether to show the logo or no
- * @apiSuccess (Success (200)) {Date} created_at The creation date of the forum
+ * @apiSuccess (Success (200)) {String} config.title The forum title
+ * @apiSuccess (Success (200)) {String} config.logo The forum logo
+ * @apiSuccess (Success (200)) {String} config.favicon The forum favicon
+ * @apiSuccess (Success (200)) {String} config.description The forum description
+ * @apiSuccess (Success (200)) {String} config.meta_description The forum meta description
+ * @apiSuccess (Success (200)) {String} config.lang The forum language
+ * @apiSuccess (Success (200)) {Boolean} config.show_title Whether to show the title or no
+ * @apiSuccess (Success (200)) {Boolean} config.show_logo Whether to show the logo or no
+ * @apiSuccess (Success (200)) {Date} config.created_at The creation date of the forum
+ * @apiSuccess (Success (200)) {Number} bottomLinks.id The id of a bottom link
+ * @apiSuccess (Success (200)) {String} bottomLinks.name The name of a bottom link
+ * @apiSuccess (Success (200)) {String} bottomLinks.link The link of a bottom link
+ * @apiSuccess (Success (200)) {Number} bottomLinks.index The index of a bottom link
  *
  * @apiSuccessExample Success Example
  * {
- *   "title": "Elevated Minds",
- *   "logo": "http://localhost:5000/uploads/logo.jpg",
- *   "favicon": "http://localhost:5000/uploads/favicon.ico",
- *   "description": "Lorem ipsum...",
- *   "meta_description": "Lorem ipsum",
- *   "lang": "en",
- *   "show_title": true,
- *   "show_logo": true,
- *   "created_at": "2025-12-27 12:50:32.667+04"
+ *   "config": {
+ *     "title": "Elevated Minds",
+ *     "logo": "http://localhost:5000/uploads/logo.jpg",
+ *     "favicon": "http://localhost:5000/uploads/favicon.ico",
+ *     "description": "Lorem ipsum...",
+ *     "meta_description": "Lorem ipsum",
+ *     "lang": "en",
+ *     "show_title": true,
+ *     "show_logo": true,
+ *     "created_at": "2025-12-27 12:50:32.667+04"
+ *   },
+ *   "bottomLinks": [
+ *     {
+ *       "id": 7,
+ *       "name": "Link a",
+ *       "link": "https://website/linka",
+ *       "index": "2"
+ *     },
+ *     {
+ *       "id": 8,
+ *       "name": "Link b",
+ *       "link": "https://website/linkb",
+ *       "index": "1"
+ *     },
+ *     {
+ *       "id": 10,
+ *       "name": "Link Z",
+ *       "link": "https://website/linkZ",
+ *      "index": "0"
+ *     }
+ *   ]
  * }
  *
  * @apiPermission Public
  */
 const get = async (req, res, next) => {
   const config = await Config.findOne();
-  res.status(httpStatus.OK).json({ config });
+  const bottomLinks = await BottomLink.findAll();
+
+  res.status(httpStatus.OK).json({ config, bottomLinks });
 };
 
 /**
