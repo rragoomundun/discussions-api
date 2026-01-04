@@ -1,6 +1,8 @@
 import httpStatus from 'http-status-codes';
+import { Op } from 'sequelize';
 
 import Config from '../models/Config.js';
+import BottomLink from '../models/BottomLink.js';
 
 import configUtil from '../utils/config.util.js';
 import adminUtil from '../utils/admin.util.js';
@@ -77,34 +79,166 @@ const init = async (req, res, next) => {
  *
  * @apiDescription Get the forum configuration.
  *
- * @apiSuccess (Success (200)) {String} title The forum title
- * @apiSuccess (Success (200)) {String} logo The forum logo
- * @apiSuccess (Success (200)) {String} favicon The forum favicon
- * @apiSuccess (Success (200)) {String} description The forum description
- * @apiSuccess (Success (200)) {String} meta The forum meta description
- * @apiSuccess (Success (200)) {String} lang The forum language
- * @apiSuccess (Success (200)) {Boolean} show_title Whether to show the title or no
- * @apiSuccess (Success (200)) {Boolean} show_logo Whether to show the logo or no
- * @apiSuccess (Success (200)) {Date} created_at The creation date of the forum
+ * @apiSuccess (Success (200)) {String} config.title The forum title
+ * @apiSuccess (Success (200)) {String} config.logo The forum logo
+ * @apiSuccess (Success (200)) {String} config.favicon The forum favicon
+ * @apiSuccess (Success (200)) {String} config.description The forum description
+ * @apiSuccess (Success (200)) {String} config.meta_description The forum meta description
+ * @apiSuccess (Success (200)) {String} config.lang The forum language
+ * @apiSuccess (Success (200)) {Boolean} config.show_title Whether to show the title or no
+ * @apiSuccess (Success (200)) {Boolean} config.show_logo Whether to show the logo or no
+ * @apiSuccess (Success (200)) {Date} config.created_at The creation date of the forum
+ * @apiSuccess (Success (200)) {Number} bottomLinks.id The id of a bottom link
+ * @apiSuccess (Success (200)) {String} bottomLinks.name The name of a bottom link
+ * @apiSuccess (Success (200)) {String} bottomLinks.link The link of a bottom link
+ * @apiSuccess (Success (200)) {Number} bottomLinks.index The index of a bottom link
  *
  * @apiSuccessExample Success Example
  * {
- *   "title": "Elevated Minds",
- *   "logo": "http://localhost:5000/uploads/logo.jpg",
- *   "favicon": "http://localhost:5000/uploads/favicon.ico",
- *   "description": "Lorem ipsum...",
- *   "meta": "Lorem ipsum",
- *   "lang": "en",
- *   "show_title": true,
- *   "show_logo": true,
- *   "created_at": "2025-12-27 12:50:32.667+04"
+ *   "config": {
+ *     "title": "Elevated Minds",
+ *     "logo": "http://localhost:5000/uploads/logo.jpg",
+ *     "favicon": "http://localhost:5000/uploads/favicon.ico",
+ *     "description": "Lorem ipsum...",
+ *     "meta_description": "Lorem ipsum",
+ *     "lang": "en",
+ *     "show_title": true,
+ *     "show_logo": true,
+ *     "created_at": "2025-12-27 12:50:32.667+04"
+ *   },
+ *   "bottomLinks": [
+ *     {
+ *       "id": 7,
+ *       "name": "Link a",
+ *       "link": "https://website/linka",
+ *       "index": "2"
+ *     },
+ *     {
+ *       "id": 8,
+ *       "name": "Link b",
+ *       "link": "https://website/linkb",
+ *       "index": "1"
+ *     },
+ *     {
+ *       "id": 10,
+ *       "name": "Link Z",
+ *       "link": "https://website/linkZ",
+ *      "index": "0"
+ *     }
+ *   ]
  * }
  *
  * @apiPermission Public
  */
 const get = async (req, res, next) => {
   const config = await Config.findOne();
-  res.status(httpStatus.OK).json({ config });
+  const bottomLinks = await BottomLink.findAll();
+
+  res.status(httpStatus.OK).json({ config, bottomLinks });
 };
 
-export { exists, init, get };
+/**
+ * @api {PUT} /config Update
+ * @apiGroup Config
+ * @apiName ConfigUpdate
+ *
+ * @apiDescription Update the forum configuration.
+ *
+ * @apiBody {String} title The forum title
+ * @apiBody {String} logo The forum logo
+ * @apiBody {String} favicon The forum favicon
+ * @apiBody {String} description The forum description
+ * @apiBody {String} meta_description The forum meta description
+ * @apiBody {String="en,fr"} lang The forum language
+ * @apiBody {Boolean} show_title Whether to show the title or no
+ * @apiBody {Boolean} show_logo Whether to show the logo or no
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "title": "Elevated Minds",
+ *   "logo": "/uploads/forum/1767429510485-logo.jpg",
+ *   "favicon": "/uploads/forum/1767429536899-favicon.jpg",
+ *   "description": "Lorem ipsum...",
+ *   "meta_description": "Lorem ipsum",
+ *   "show_title": true,
+ *   "show_logo": true
+ * }
+ *
+ * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
+ *
+ * @apiPermission Private
+ */
+const update = async (req, res, next) => {
+  const { title, logo, favicon, description, meta_description, lang, show_title, show_logo } = req.body;
+  const config = await Config.findOne();
+
+  config.title = title;
+  config.logo = logo;
+  config.favicon = favicon;
+  config.description = description;
+  config.meta_description = meta_description;
+  config.lang = lang;
+  config.show_title = show_title;
+  config.show_logo = show_logo;
+
+  await config.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
+ * @api {PUT} /config/bottom-links Update Bottom Links
+ * @apiGroup Config
+ * @apiName ConfigUpdateBottomLinks
+ *
+ * @apiDescription Update the forum bottom links.
+ *
+ * @apiBody {Number} id The link id
+ * @apiBody {String} name The link name
+ * @apiBody {String} link The link
+ * @apiBody {Number} index The link position
+ *
+ * @apiParamExample {json} Body Example
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "About",
+ *     "link": "https://website.com/about",
+ *     "index": 0
+ *   },
+ *   {
+ *     "id": null,
+ *     "name": "Terms",
+ *     "link": "https://website.com/terms",
+ *     "index": 1
+ *   },
+ * ]
+ *
+ * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
+ *
+ * @apiPermission Private
+ */
+const updateBottomLinks = async (req, res, next) => {
+  const linkIds = req.body.filter((item) => [null, undefined].includes(item.id) === false).map((item) => item.id);
+
+  await BottomLink.destroy({ where: { id: { [Op.notIn]: linkIds } } });
+
+  for (const item of req.body) {
+    if ([undefined, null].includes(item.id)) {
+      await BottomLink.create(item);
+    } else {
+      const { id, name, link, index } = item;
+      const linkObj = await BottomLink.findOne({ where: id });
+
+      linkObj.name = name;
+      linkObj.link = link;
+      linkObj.index = index;
+
+      await linkObj.save();
+    }
+  }
+
+  res.status(httpStatus.OK).end();
+};
+
+export { exists, init, get, update, updateBottomLinks };

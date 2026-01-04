@@ -23,7 +23,7 @@ const Config = dbUtil.define(
     description: {
       type: DataTypes.TEXT
     },
-    meta: {
+    meta_description: {
       type: DataTypes.TEXT
     },
     lang: {
