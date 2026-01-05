@@ -150,4 +150,40 @@ const updateProfilePicture = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { getUser, updateEmail, updatePassword, updateProfilePicture };
+/**
+ * @api {PUT} /user/personal-information Update Personal Information
+ * @apiGroup User
+ * @apiName UpdatePersonalInformation
+ *
+ * @apiDescription Update the user's personal information.
+ *
+ * @apiBody {Date} birthday The date of birth of the user.
+ * @apiBody {String} biography The user's biography.
+ * @apiBody {String} location The user's location
+ * @apiBody {String="male,female"} gender The user's gender.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "birthday": "2026-01-05T10:57:04.822Z",
+ *   "biography": "Lorem ipsum..."
+ *   "location": "Mauritius"
+ *   "gender": "male"
+ * }
+ *
+ * @apiPermission Private
+ */
+const updatePersonalInformation = async (req, res, next) => {
+  const { birthday, biography, location, gender } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.birthday = birthday;
+  user.biography = biography;
+  user.location = location;
+  user.gender = gender;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getUser, updateEmail, updatePassword, updateProfilePicture, updatePersonalInformation };
