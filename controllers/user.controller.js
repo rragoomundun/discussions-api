@@ -153,7 +153,7 @@ const updateProfilePicture = async (req, res, next) => {
 /**
  * @api {PUT} /user/personal-information Update Personal Information
  * @apiGroup User
- * @apiName UpdatePersonalInformation
+ * @apiName UserUpdatePersonalInformation
  *
  * @apiDescription Update the user's personal information.
  *
@@ -186,4 +186,31 @@ const updatePersonalInformation = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { getUser, updateEmail, updatePassword, updateProfilePicture, updatePersonalInformation };
+/**
+ * @api {PUT} /user/signature Update Signature
+ * @apiGroup User
+ * @apiName UserUpdateSignature
+ *
+ * @apiDescription Update the user's signature.
+ *
+ * @apiBody {String} signature The user's signature
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "signature": "Lorem ipsum..."
+ * }
+ *
+ * @apiPermission Private
+ */
+const updateSignature = async (req, res, next) => {
+  const { signature } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.signature = signature;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getUser, updateEmail, updatePassword, updateProfilePicture, updatePersonalInformation, updateSignature };
