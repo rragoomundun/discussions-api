@@ -19,4 +19,24 @@ const emailValidator = validation([
     })
 ]);
 
-export { emailValidator };
+const passwordValidator = validation([
+  body('password')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .isLength({ min: 8 })
+    .withMessage('PASSWORD_MIN_LENGTH')
+    .isStrongPassword()
+    .withMessage('PASSWORD_NOT_STRONG'),
+  body('passwordConfirmation')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('PASSWORD_CONFIRMATION_NO_MATCH');
+      }
+
+      return true;
+    })
+]);
+
+export { emailValidator, passwordValidator };

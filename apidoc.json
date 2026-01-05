@@ -24,6 +24,7 @@
     "User",
     "UserGetUser",
     "UserUpdateEmail",
+    "UserUpdatePassword",
     "Forum",
     "ForumUpdateForum",
     "File",
