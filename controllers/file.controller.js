@@ -24,7 +24,7 @@ const uploadFile = async (req, res, next) => {
 };
 
 /**
- * @api {POST} /file Delte
+ * @api {POST} /file Delete
  * @apiGroup File
  * @apiName FileDelete
  *

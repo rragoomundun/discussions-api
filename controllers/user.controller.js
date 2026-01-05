@@ -95,7 +95,7 @@ const updateEmail = async (req, res, next) => {
  * @apiGroup User
  * @apiName UserUpdatePassword
  *
- * @apiDescription Update the user password
+ * @apiDescription Update the user password.
  *
  * @apiBody {String} password The password.
  * @apiBody {String} passwordConfirmation The password confirmation.
@@ -121,4 +121,33 @@ const updatePassword = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { getUser, updateEmail, updatePassword };
+/**
+ * @api {PUT} /user/profile-picture Update Profile Picture
+ * @apiGroup User
+ * @apiName UserUpdateProfilePicture
+ *
+ * @apiDescription Update the user profile picture.
+ *
+ * @apiBody {String} path Profile picture path.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "path": "/uploads/user/31/132148963-picture.jpg"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updateProfilePicture = async (req, res, next) => {
+  const { path } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.image = path;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getUser, updateEmail, updatePassword, updateProfilePicture };

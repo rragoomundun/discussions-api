@@ -39,4 +39,6 @@ const passwordValidator = validation([
     })
 ]);
 
-export { emailValidator, passwordValidator };
+const profilePictureValidator = validation([body('path').notEmpty().withMessage('EMPTY')]);
+
+export { emailValidator, passwordValidator, profilePictureValidator };
