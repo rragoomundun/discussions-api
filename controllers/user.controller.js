@@ -64,4 +64,30 @@ const getUser = async (req, res, next) => {
   res.status(httpStatus.OK).json(user);
 };
 
-export { getUser };
+/**
+ * @api {PUT} /user/email Update Email
+ * @apiGroup User
+ * @apiName UserUpdateEmail
+ *
+ * @apiDescription Update the user email
+ *
+ * @apiBody {String} email The email.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "email": "tom.apollo@ex.com"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updateEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  await User.update({ email }, { where: { id: req.user.id } });
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getUser, updateEmail };
