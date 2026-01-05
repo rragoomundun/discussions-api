@@ -26,6 +26,7 @@
     "UserUpdateEmail",
     "UserUpdatePassword",
     "UserUpdateProfilePicture",
+    "UpdatePersonalInformation",
     "Forum",
     "ForumUpdateForum",
     "File",
