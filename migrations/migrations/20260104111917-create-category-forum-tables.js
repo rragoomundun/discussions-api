@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false
       },
       index: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false
       }
     });
@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       index: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       category_id: {

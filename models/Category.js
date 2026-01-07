@@ -15,7 +15,7 @@ const Category = dbUtil.define(
       allowNull: false
     },
     index: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   },
