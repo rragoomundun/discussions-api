@@ -21,7 +21,7 @@ const Forum = dbUtil.define(
       type: DataTypes.STRING
     },
     index: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   },
