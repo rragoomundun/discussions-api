@@ -11,12 +11,12 @@ import Forum from '../models/Forum.js';
  *
  * @apiDescription Create and/or update categories and forums.
  *
- * @apiBody {String} name The category name.
- * @apiBody {String} index The category position.
- * @apiBody {String} forums.name Forum's name.
- * @apiBody {String} forums.description Forum's description.
- * @apiBody {String} forums.meta_description Forum's meta description.
- * @apiBody {String} forums.index Forum's position.
+ * @apiBody {String} .name The category name.
+ * @apiBody {String} .index The category position.
+ * @apiBody {String} .forums.name Forum's name.
+ * @apiBody {String} .forums.description Forum's description.
+ * @apiBody {String} .forums.meta_description Forum's meta description.
+ * @apiBody {String} .forums.index Forum's position.
  *
  * @apiParamExample {json} Body Example
  * [
@@ -39,6 +39,40 @@ import Forum from '../models/Forum.js';
  *     ]
  *   }
  * ]
+ * 
+ * @apiSuccess (Success (200)) {Number} .id The category id
+ * @apiSuccess (Success (200)) {String} .name The category name.
+ * @apiSuccess (Success (200)) {String} .index The category position.
+ * @apiSuccess (Success (200)) {Number} .forums.id The forum id
+ * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
+ * @apiSuccess (Success (200)) {String} .forums.description Forum's description.
+ * @apiSuccess (Success (200)) {String} .forums.meta_description Forum's meta description.
+ * @apiSuccess (Success (200)) {String} .forums.index Forum's position.
+
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "Category 1",
+ *     "index": 0,
+ *     "forums": [
+ *       {
+ *         "id": 1,
+ *         "name": "Forum 1",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 0
+ *       },
+ *       {
+ *         "id": 2,
+ *         "name": "Forum 2",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 1
+ *       }
+ *     ]
+ *   }
+ * ]
  *
  * @apiPermission Private
  */
@@ -46,6 +80,8 @@ const updateForum = async (req, res, next) => {
   const categoryIds = req.body
     .filter((category) => [null, undefined].includes(category.id) === false)
     .map((category) => category.id);
+  const returnedJson = [];
+  let i = 0;
 
   await Category.destroy({ where: { id: { [Op.notIn]: categoryIds } } });
 
@@ -65,6 +101,13 @@ const updateForum = async (req, res, next) => {
       await categoryObj.save();
     }
 
+    returnedJson.push({
+      id: categoryObj.id,
+      name: categoryObj.name,
+      index: categoryObj.index,
+      forums: []
+    });
+
     const forumIds = category.forums
       .filter((forum) => [null, undefined].includes(forum.id) === false)
       .map((forum) => forum.id);
@@ -72,13 +115,14 @@ const updateForum = async (req, res, next) => {
     await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, category_id: categoryObj.id } });
 
     for (const forum of category.forums) {
+      let forumObj;
       const forumName = forum.name;
       const forumDescription = forum.description;
       const forumMetaDescription = forum.meta_description;
       const forumIndex = forum.index;
 
       if (!forum.id) {
-        await Forum.create({
+        forumObj = await Forum.create({
           name: forumName,
           description: forumDescription,
           meta_description: forumMetaDescription,
@@ -86,7 +130,7 @@ const updateForum = async (req, res, next) => {
           category_id: categoryObj.id
         });
       } else {
-        const forumObj = await Forum.findOne({ where: { id: forum.id } });
+        forumObj = await Forum.findOne({ where: { id: forum.id } });
 
         forumObj.name = forumName;
         forumObj.description = forumDescription;
@@ -96,10 +140,20 @@ const updateForum = async (req, res, next) => {
 
         await forumObj.save();
       }
+
+      returnedJson[i].forums.push({
+        id: forumObj.id,
+        name: forumObj.name,
+        description: forumObj.description,
+        meta_description: forumObj.meta_description,
+        index: forumObj.index
+      });
     }
+
+    i++;
   }
 
-  res.status(httpStatus.OK).end();
+  res.status(httpStatus.OK).json(returnedJson);
 };
 
 export { updateForum };
