@@ -64,4 +64,153 @@ const getUser = async (req, res, next) => {
   res.status(httpStatus.OK).json(user);
 };
 
-export { getUser };
+/**
+ * @api {PUT} /user/email Update Email
+ * @apiGroup User
+ * @apiName UserUpdateEmail
+ *
+ * @apiDescription Update the user email
+ *
+ * @apiBody {String} email The email.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "email": "tom.apollo@ex.com"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updateEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  await User.update({ email }, { where: { id: req.user.id } });
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
+ * @api {PUT} /user/password Update Password
+ * @apiGroup User
+ * @apiName UserUpdatePassword
+ *
+ * @apiDescription Update the user password.
+ *
+ * @apiBody {String} password The password.
+ * @apiBody {String} passwordConfirmation The password confirmation.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "password": "ophq31;H",
+ *   "passwordConfirmation": "ophq31;H"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updatePassword = async (req, res, next) => {
+  const { password } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.password = password;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
+ * @api {PUT} /user/profile-picture Update Profile Picture
+ * @apiGroup User
+ * @apiName UserUpdateProfilePicture
+ *
+ * @apiDescription Update the user profile picture.
+ *
+ * @apiBody {String} path Profile picture path.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "path": "/uploads/user/31/132148963-picture.jpg"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updateProfilePicture = async (req, res, next) => {
+  const { path } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.image = path;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
+ * @api {PUT} /user/personal-information Update Personal Information
+ * @apiGroup User
+ * @apiName UserUpdatePersonalInformation
+ *
+ * @apiDescription Update the user's personal information.
+ *
+ * @apiBody {Date} birthday The date of birth of the user.
+ * @apiBody {String} biography The user's biography.
+ * @apiBody {String} location The user's location
+ * @apiBody {String="male,female"} gender The user's gender.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "birthday": "2026-01-05T10:57:04.822Z",
+ *   "biography": "Lorem ipsum..."
+ *   "location": "Mauritius"
+ *   "gender": "male"
+ * }
+ *
+ * @apiPermission Private
+ */
+const updatePersonalInformation = async (req, res, next) => {
+  const { birthday, biography, location, gender } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.birthday = birthday;
+  user.biography = biography;
+  user.location = location;
+  user.gender = gender;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
+ * @api {PUT} /user/signature Update Signature
+ * @apiGroup User
+ * @apiName UserUpdateSignature
+ *
+ * @apiDescription Update the user's signature.
+ *
+ * @apiBody {String} signature The user's signature
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "signature": "Lorem ipsum..."
+ * }
+ *
+ * @apiPermission Private
+ */
+const updateSignature = async (req, res, next) => {
+  const { signature } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.signature = signature;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getUser, updateEmail, updatePassword, updateProfilePicture, updatePersonalInformation, updateSignature };
