@@ -5,6 +5,71 @@ import Category from '../models/Category.js';
 import Forum from '../models/Forum.js';
 
 /**
+ * @api {GET} /forum Get Forum
+ * @apiGroup Forum
+ * @apiName ForumGetForum
+ *
+ * @apiDescription Get categories and forums.
+ *
+ * @apiSuccess (Success (200)) {Number} .id The category id
+ * @apiSuccess (Success (200)) {String} .name The category name.
+ * @apiSuccess (Success (200)) {String} .index The category position.
+ * @apiSuccess (Success (200)) {Number} .forums.id The forum id
+ * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
+ * @apiSuccess (Success (200)) {String} .forums.description Forum's description.
+ * @apiSuccess (Success (200)) {String} .forums.meta_description Forum's meta description.
+ * @apiSuccess (Success (200)) {String} .forums.index Forum's position.
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "Category 1",
+ *     "index": 0,
+ *     "forums": [
+ *       {
+ *         "id": 1,
+ *         "name": "Forum 1",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 0
+ *        },
+ *       {
+ *         "id": 2,
+ *         "name": "Forum 2",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 1
+ *       }
+ *     ]
+ *   }
+ * ]
+ *
+ * @apiPermission Public
+ */
+const getForum = async (req, res, next) => {
+  const categories = await Category.findAll({
+    order: [
+      ['index', 'ASC'],
+      [{ model: Forum, as: 'Forums' }, 'index', 'ASC']
+    ],
+    include: [
+      {
+        model: Forum,
+        as: 'Forums'
+      }
+    ]
+  });
+
+  for (const category of categories) {
+    category.dataValues.forums = category.Forums;
+    delete category.dataValues.Forums;
+  }
+
+  res.status(httpStatus.OK).json(categories);
+};
+
+/**
  * @api {PUT} /forum Update Forum
  * @apiGroup Forum
  * @apiName ForumUpdateForum
@@ -85,75 +150,79 @@ const updateForum = async (req, res, next) => {
 
   await Category.destroy({ where: { id: { [Op.notIn]: categoryIds } } });
 
-  for (const category of req.body) {
-    const categoryName = category.name;
-    const categoryIndex = category.index;
-    let categoryObj;
+  try {
+    for (const category of req.body) {
+      const categoryName = category.name;
+      const categoryIndex = category.index;
+      let categoryObj;
 
-    if (!category.id) {
-      categoryObj = await Category.create({ name: categoryName, index: categoryIndex });
-    } else {
-      categoryObj = await Category.findOne({ where: { id: category.id } });
-
-      categoryObj.name = categoryName;
-      categoryObj.index = categoryIndex;
-
-      await categoryObj.save();
-    }
-
-    returnedJson.push({
-      id: categoryObj.id,
-      name: categoryObj.name,
-      index: categoryObj.index,
-      forums: []
-    });
-
-    const forumIds = category.forums
-      .filter((forum) => [null, undefined].includes(forum.id) === false)
-      .map((forum) => forum.id);
-
-    await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, category_id: categoryObj.id } });
-
-    for (const forum of category.forums) {
-      let forumObj;
-      const forumName = forum.name;
-      const forumDescription = forum.description;
-      const forumMetaDescription = forum.meta_description;
-      const forumIndex = forum.index;
-
-      if (!forum.id) {
-        forumObj = await Forum.create({
-          name: forumName,
-          description: forumDescription,
-          meta_description: forumMetaDescription,
-          index: forumIndex,
-          category_id: categoryObj.id
-        });
+      if (!category.id) {
+        categoryObj = await Category.create({ name: categoryName, index: categoryIndex });
       } else {
-        forumObj = await Forum.findOne({ where: { id: forum.id } });
+        categoryObj = await Category.findOne({ where: { id: category.id } });
 
-        forumObj.name = forumName;
-        forumObj.description = forumDescription;
-        forumObj.meta_description = forumMetaDescription;
-        forumObj.index = forumIndex;
-        forumObj.category_id = categoryObj.id;
+        categoryObj.name = categoryName;
+        categoryObj.index = categoryIndex;
 
-        await forumObj.save();
+        await categoryObj.save();
       }
 
-      returnedJson[i].forums.push({
-        id: forumObj.id,
-        name: forumObj.name,
-        description: forumObj.description,
-        meta_description: forumObj.meta_description,
-        index: forumObj.index
+      returnedJson.push({
+        id: categoryObj.id,
+        name: categoryObj.name,
+        index: categoryObj.index,
+        forums: []
       });
-    }
 
-    i++;
+      const forumIds = category.forums
+        .filter((forum) => [null, undefined].includes(forum.id) === false)
+        .map((forum) => forum.id);
+
+      await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, category_id: categoryObj.id } });
+
+      for (const forum of category.forums) {
+        let forumObj;
+        const forumName = forum.name;
+        const forumDescription = forum.description;
+        const forumMetaDescription = forum.meta_description;
+        const forumIndex = forum.index;
+
+        if (!forum.id) {
+          forumObj = await Forum.create({
+            name: forumName,
+            description: forumDescription,
+            meta_description: forumMetaDescription,
+            index: forumIndex,
+            category_id: categoryObj.id
+          });
+        } else {
+          forumObj = await Forum.findOne({ where: { id: forum.id } });
+
+          forumObj.name = forumName;
+          forumObj.description = forumDescription;
+          forumObj.meta_description = forumMetaDescription;
+          forumObj.index = forumIndex;
+          forumObj.category_id = categoryObj.id;
+
+          await forumObj.save();
+        }
+
+        returnedJson[i].forums.push({
+          id: forumObj.id,
+          name: forumObj.name,
+          description: forumObj.description,
+          meta_description: forumObj.meta_description,
+          index: forumObj.index
+        });
+      }
+
+      i++;
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   res.status(httpStatus.OK).json(returnedJson);
 };
 
-export { updateForum };
+export { getForum, updateForum };

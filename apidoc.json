@@ -29,6 +29,7 @@
     "UserUpdatePersonalInformation",
     "UserUpdateSignature",
     "Forum",
+    "ForumGetForum",
     "ForumUpdateForum",
     "File",
     "FileUpload",
