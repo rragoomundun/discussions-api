@@ -5,6 +5,71 @@ import Category from '../models/Category.js';
 import Forum from '../models/Forum.js';
 
 /**
+ * @api {GET} /forum Get Forum
+ * @apiGroup Forum
+ * @apiName ForumGetForum
+ *
+ * @apiDescription Get categories and forums.
+ *
+ * @apiSuccess (Success (200)) {Number} .id The category id
+ * @apiSuccess (Success (200)) {String} .name The category name.
+ * @apiSuccess (Success (200)) {String} .index The category position.
+ * @apiSuccess (Success (200)) {Number} .forums.id The forum id
+ * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
+ * @apiSuccess (Success (200)) {String} .forums.description Forum's description.
+ * @apiSuccess (Success (200)) {String} .forums.meta_description Forum's meta description.
+ * @apiSuccess (Success (200)) {String} .forums.index Forum's position.
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "Category 1",
+ *     "index": 0,
+ *     "forums": [
+ *       {
+ *         "id": 1,
+ *         "name": "Forum 1",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 0
+ *        },
+ *       {
+ *         "id": 2,
+ *         "name": "Forum 2",
+ *         "description": "Lorem ipsum...",
+ *         "meta_description": "Lorem ipsum...",
+ *         "index": 1
+ *       }
+ *     ]
+ *   }
+ * ]
+ *
+ * @apiPermission Public
+ */
+const getForum = async (req, res, next) => {
+  const categories = await Category.findAll({
+    order: [
+      ['index', 'ASC'],
+      [{ model: Forum, as: 'Forums' }, 'index', 'ASC']
+    ],
+    include: [
+      {
+        model: Forum,
+        as: 'Forums'
+      }
+    ]
+  });
+
+  for (const category of categories) {
+    category.dataValues.forums = category.Forums;
+    delete category.dataValues.Forums;
+  }
+
+  res.status(httpStatus.OK).json(categories);
+};
+
+/**
  * @api {PUT} /forum Update Forum
  * @apiGroup Forum
  * @apiName ForumUpdateForum
@@ -156,4 +221,4 @@ const updateForum = async (req, res, next) => {
   res.status(httpStatus.OK).json(returnedJson);
 };
 
-export { updateForum };
+export { getForum, updateForum };
