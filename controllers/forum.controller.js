@@ -56,7 +56,8 @@ const getForum = async (req, res, next) => {
     include: [
       {
         model: Forum,
-        as: 'Forums'
+        as: 'Forums',
+        attributes: ['id', 'name', 'description', 'meta_description', 'index']
       }
     ]
   });
