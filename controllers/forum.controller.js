@@ -112,6 +112,10 @@ const updateForum = async (req, res, next) => {
       .filter((forum) => [null, undefined].includes(forum.id) === false)
       .map((forum) => forum.id);
 
+    // Put all forums in the proper category
+    await Forum.update({ category_id: category.id }, { where: { id: { [Op.in]: forumIds } } });
+
+    // Destroy forums
     await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, category_id: categoryObj.id } });
 
     for (const forum of category.forums) {
