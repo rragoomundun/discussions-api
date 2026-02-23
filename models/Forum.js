@@ -15,10 +15,10 @@ const Forum = dbUtil.define(
       allowNull: false
     },
     description: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
     meta_description: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
     index: {
       type: DataTypes.INTEGER,
