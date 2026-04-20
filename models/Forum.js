@@ -17,7 +17,7 @@ const Forum = dbUtil.define(
     description: {
       type: DataTypes.TEXT
     },
-    meta_description: {
+     metaDescription: {
       type: DataTypes.TEXT
     },
     index: {
@@ -25,7 +25,7 @@ const Forum = dbUtil.define(
       allowNull: false
     }
   },
-  { timestamps: false, tableName: 'forums' }
+  { timestamps: false, tableName: 'Forum' }
 );
 
 export default Forum;

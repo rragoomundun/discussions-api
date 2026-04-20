@@ -8,28 +8,36 @@ import Forum from './Forum.js';
 const setupDBAssociations = () => {
   User.hasMany(Token, {
     foreignKey: {
-      name: 'user_id',
+      name: 'userId',
       allowNull: false
-    }
+    },
+    sourceKey: 'id',
+    as: 'tokens'
   });
   Token.belongsTo(User, {
     foreignKey: {
-      name: 'user_id',
+      name: 'userId',
       allowNull: false
-    }
+    },
+    targetKey: 'id',
+    as: 'user'
   });
 
   Category.hasMany(Forum, {
     foreignKey: {
-      name: 'category_id',
+      name: 'categoryId',
       allowNull: false
-    }
+    },
+    sourceKey: 'id',
+    as: 'forums'
   });
   Forum.belongsTo(Category, {
     foreignKey: {
-      name: 'category_id',
+      name: 'categoryId',
       allowNull: false
-    }
+    },
+    targetKey: 'id',
+    as: 'category'
   });
 };
 

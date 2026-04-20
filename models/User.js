@@ -59,14 +59,14 @@ const User = dbUtil.define(
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
-    created_at: {
+     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     }
   },
   {
     timestamps: false,
-    tableName: 'users',
+    tableName: 'User',
     hooks: {
       beforeSave: async (user) => {
         if (user.changed('password')) {
