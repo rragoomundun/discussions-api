@@ -20,7 +20,7 @@ import User from '../models/User.js';
  * @apiSuccess (Success (200)) {String} gender The user gender
  * @apiSuccess (Success (200)) {String} signature The user signature
  * @apiSuccess (Success (200)) {Boolean} active Whether the user is active or no
- * @apiSuccess (Success (200)) {Date} created_at The created date of the account
+ * @apiSuccess (Success (200)) {Date} createdAt The created date of the account
  *
  * @apiSuccessExample Success Example
  * {
@@ -35,7 +35,7 @@ import User from '../models/User.js';
  *   "gender": "male",
  *   "signature": "Lorem ipsum...",
  *   "active": true,
- *   "created_at": "2025-12-30 11:11:11"
+ *   "createdAt": "2025-12-30 11:11:11"
  * }
  *
  * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
@@ -57,7 +57,7 @@ const getUser = async (req, res, next) => {
       'gender',
       'signature',
       'active',
-      'created_at'
+      'createdAt'
     ]
   });
 

@@ -23,7 +23,7 @@ const Config = dbUtil.define(
     description: {
       type: DataTypes.TEXT
     },
-    meta_description: {
+     metaDescription: {
       type: DataTypes.TEXT
     },
     lang: {
@@ -31,15 +31,15 @@ const Config = dbUtil.define(
       defaultValue: 'en',
       allowNull: false
     },
-    show_title: {
+     showTitle: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
-    show_logo: {
+     showLogo: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    created_at: {
+     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false
@@ -47,7 +47,7 @@ const Config = dbUtil.define(
   },
   {
     timestamps: false,
-    tableName: 'configs'
+    tableName: 'Config'
   }
 );
 

@@ -12,13 +12,13 @@ import Forum from '../models/Forum.js';
  * @apiDescription Get categories and forums.
  *
  * @apiSuccess (Success (200)) {Number} .id The category id
- * @apiSuccess (Success (200)) {String} .meta_description The category meta description.
+ * @apiSuccess (Success (200)) {String} .metaDescription The category meta description.
  * @apiSuccess (Success (200)) {String} .name The category name.
  * @apiSuccess (Success (200)) {String} .index The category position.
  * @apiSuccess (Success (200)) {Number} .forums.id The forum id
  * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
  * @apiSuccess (Success (200)) {String} .forums.description Forum's description.
- * @apiSuccess (Success (200)) {String} .forums.meta_description Forum's meta description.
+ * @apiSuccess (Success (200)) {String} .forums.metaDescription Forum's meta description.
  * @apiSuccess (Success (200)) {String} .forums.index Forum's position.
  *
  * @apiSuccessExample Success Example
@@ -26,21 +26,21 @@ import Forum from '../models/Forum.js';
  *   {
  *     "id": 1,
  *     "name": "Category 1",
- *     "meta_description": "Lorem ipsum...",
+ *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
  *       {
  *         "id": 1,
  *         "name": "Forum 1",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 0
  *        },
  *       {
  *         "id": 2,
  *         "name": "Forum 2",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 1
  *       }
  *     ]
@@ -59,7 +59,7 @@ const getForum = async (req, res, next) => {
       {
         model: Forum,
         as: 'Forums',
-        attributes: ['id', 'name', 'description', 'meta_description', 'index']
+        attributes: ['id', 'name', 'description', 'metaDescription', 'index']
       }
     ]
   });
@@ -80,30 +80,30 @@ const getForum = async (req, res, next) => {
  * @apiDescription Create and/or update categories and forums.
  *
  * @apiBody {String} .name The category name.
- * @apiBody {String} .meta_description The category meta description.
+ * @apiBody {String} .metaDescription The category meta description.
  * @apiBody {String} .index The category position.
  * @apiBody {String} .forums.name Forum's name.
  * @apiBody {String} .forums.description Forum's description.
- * @apiBody {String} .forums.meta_description Forum's meta description.
+ * @apiBody {String} .forums.metaDescription Forum's meta description.
  * @apiBody {String} .forums.index Forum's position.
  *
  * @apiParamExample {json} Body Example
  * [
  *   {
  *     "name": "Category 1",
- *     "meta_description": "Lorem ipsum...",
+ *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
  *       {
  *         "name": "Forum 1",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 0
  *       },
  *       {
  *         "name": "Forum 2",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 1
  *       }
  *     ]
@@ -112,12 +112,12 @@ const getForum = async (req, res, next) => {
  * 
  * @apiSuccess (Success (200)) {Number} .id The category id
  * @apiSuccess (Success (200)) {String} .name The category name.
- * @apiSuccess (Success (200)) {String} .meta_description The category meta description.
+ * @apiSuccess (Success (200)) {String} .metaDescription The category meta description.
  * @apiSuccess (Success (200)) {String} .index The category position.
  * @apiSuccess (Success (200)) {Number} .forums.id The forum id
  * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
  * @apiSuccess (Success (200)) {String} .forums.description Forum's description.
- * @apiSuccess (Success (200)) {String} .forums.meta_description Forum's meta description.
+ * @apiSuccess (Success (200)) {String} .forums.metaDescription Forum's meta description.
  * @apiSuccess (Success (200)) {String} .forums.index Forum's position.
 
  * @apiSuccessExample Success Example
@@ -125,21 +125,21 @@ const getForum = async (req, res, next) => {
  *   {
  *     "id": 1,
  *     "name": "Category 1",
- *     "meta_description": "Lorem ipsum...",
+ *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
  *       {
  *         "id": 1,
  *         "name": "Forum 1",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 0
  *       },
  *       {
  *         "id": 2,
  *         "name": "Forum 2",
  *         "description": "Lorem ipsum...",
- *         "meta_description": "Lorem ipsum...",
+ *         "metaDescription": "Lorem ipsum...",
  *         "index": 1
  *       }
  *     ]
@@ -159,21 +159,21 @@ const updateForum = async (req, res, next) => {
 
   for (const category of req.body) {
     const categoryName = category.name;
-    const categoryMetaDescription = category.meta_description;
+    const categoryMetaDescription = category.metaDescription;
     const categoryIndex = category.index;
     let categoryObj;
 
     if (!category.id) {
       categoryObj = await Category.create({
         name: categoryName,
-        meta_description: categoryMetaDescription,
+        metaDescription: categoryMetaDescription,
         index: categoryIndex
       });
     } else {
       categoryObj = await Category.findOne({ where: { id: category.id } });
 
       categoryObj.name = categoryName;
-      categoryObj.meta_description = categoryMetaDescription;
+      categoryObj.metaDescription = categoryMetaDescription;
       categoryObj.index = categoryIndex;
 
       await categoryObj.save();
@@ -182,7 +182,7 @@ const updateForum = async (req, res, next) => {
     returnedJson.push({
       id: categoryObj.id,
       name: categoryObj.name,
-      meta_description: categoryObj.meta_description,
+      metaDescription: categoryObj.metaDescription,
       index: categoryObj.index,
       forums: []
     });

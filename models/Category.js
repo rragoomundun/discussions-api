@@ -14,7 +14,7 @@ const Category = dbUtil.define(
       type: DataTypes.STRING,
       allowNull: false
     },
-    meta_description: {
+    metaDescription: {
       type: DataTypes.TEXT
     },
     index: {
@@ -24,7 +24,7 @@ const Category = dbUtil.define(
   },
   {
     timestamps: false,
-    tableName: 'categories'
+    tableName: 'Category'
   }
 );
 
