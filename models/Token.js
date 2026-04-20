@@ -27,7 +27,7 @@ const Token = dbUtil.define(
   },
   {
     timestamps: false,
-    tableName: 'tokens'
+    tableName: 'Token'
   }
 );
 

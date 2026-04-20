@@ -69,7 +69,7 @@ const register = async (req, res, next) => {
     result = await dbUtil.transaction(async (transaction) => {
       const user = await User.create({ name, email, password, role }, { transaction });
       const token = await Token.create(
-        { type: 'register-confirm', value: 'empty', expire: Date.now(), user_id: user.id },
+        { type: 'register-confirm', value: 'empty', expire: Date.now(), userId: user.id },
         { transaction }
       );
       const tokenDecrypted = token.generateToken();

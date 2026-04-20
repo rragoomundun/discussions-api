@@ -25,7 +25,7 @@ const BottomLink = dbUtil.define(
   },
   {
     timestamps: false,
-    tableName: 'bottom_links'
+    tableName: 'BottomLink'
   }
 );
 
