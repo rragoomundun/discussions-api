@@ -14,7 +14,7 @@ const clearTokens = () => {
         type: 'register-confirm'
       }
     });
-    const confirmTokensUserIds = confirmTokens.map((token) => token.dataValues.user_id);
+    const confirmTokensUserIds = confirmTokens.map((token) => token.dataValues.userId);
 
     userUtil.deleteUsers(confirmTokensUserIds);
 
