@@ -53,21 +53,16 @@ const getForum = async (req, res, next) => {
   const categories = await Category.findAll({
     order: [
       ['index', 'ASC'],
-      [{ model: Forum, as: 'Forums' }, 'index', 'ASC']
+      [{ model: Forum, as: 'forums' }, 'index', 'ASC']
     ],
     include: [
       {
         model: Forum,
-        as: 'Forums',
+        as: 'forums',
         attributes: ['id', 'name', 'description', 'metaDescription', 'index']
       }
     ]
   });
-
-  for (const category of categories) {
-    category.dataValues.forums = category.Forums;
-    delete category.dataValues.Forums;
-  }
 
   res.status(httpStatus.OK).json(categories);
 };
@@ -192,34 +187,34 @@ const updateForum = async (req, res, next) => {
       .map((forum) => forum.id);
 
     // Put all forums in the proper category
-    await Forum.update({ category_id: category.id }, { where: { id: { [Op.in]: forumIds } } });
+    await Forum.update({ categoryId: category.id }, { where: { id: { [Op.in]: forumIds } } });
 
     // Destroy forums
-    await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, category_id: categoryObj.id } });
+    await Forum.destroy({ where: { id: { [Op.notIn]: forumIds }, categoryId: categoryObj.id } });
 
     for (const forum of category.forums) {
       let forumObj;
       const forumName = forum.name;
       const forumDescription = forum.description;
-      const forumMetaDescription = forum.meta_description;
+      const forumMetaDescription = forum.metaDescription;
       const forumIndex = forum.index;
 
       if (!forum.id) {
         forumObj = await Forum.create({
           name: forumName,
           description: forumDescription,
-          meta_description: forumMetaDescription,
+          metaDescription: forumMetaDescription,
           index: forumIndex,
-          category_id: categoryObj.id
+          categoryId: categoryObj.id
         });
       } else {
         forumObj = await Forum.findOne({ where: { id: forum.id } });
 
         forumObj.name = forumName;
         forumObj.description = forumDescription;
-        forumObj.meta_description = forumMetaDescription;
+        forumObj.metaDescription = forumMetaDescription;
         forumObj.index = forumIndex;
-        forumObj.category_id = categoryObj.id;
+        forumObj.categoryId = categoryObj.id;
 
         await forumObj.save();
       }
@@ -228,7 +223,7 @@ const updateForum = async (req, res, next) => {
         id: forumObj.id,
         name: forumObj.name,
         description: forumObj.description,
-        meta_description: forumObj.meta_description,
+        metaDescription: forumObj.metaDescription,
         index: forumObj.index
       });
     }

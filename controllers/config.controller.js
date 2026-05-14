@@ -83,11 +83,11 @@ const init = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} config.logo The forum logo
  * @apiSuccess (Success (200)) {String} config.favicon The forum favicon
  * @apiSuccess (Success (200)) {String} config.description The forum description
- * @apiSuccess (Success (200)) {String} config.meta_description The forum meta description
+ * @apiSuccess (Success (200)) {String} config.metaDescription The forum meta description
  * @apiSuccess (Success (200)) {String} config.lang The forum language
- * @apiSuccess (Success (200)) {Boolean} config.show_title Whether to show the title or no
- * @apiSuccess (Success (200)) {Boolean} config.show_logo Whether to show the logo or no
- * @apiSuccess (Success (200)) {Date} config.created_at The creation date of the forum
+ * @apiSuccess (Success (200)) {Boolean} config.showTitle Whether to show the title or no
+ * @apiSuccess (Success (200)) {Boolean} config.showLogo Whether to show the logo or no
+ * @apiSuccess (Success (200)) {Date} config.createdAt The creation date of the forum
  * @apiSuccess (Success (200)) {Number} bottomLinks.id The id of a bottom link
  * @apiSuccess (Success (200)) {String} bottomLinks.name The name of a bottom link
  * @apiSuccess (Success (200)) {String} bottomLinks.link The link of a bottom link
@@ -100,11 +100,11 @@ const init = async (req, res, next) => {
  *     "logo": "http://localhost:5000/uploads/logo.jpg",
  *     "favicon": "http://localhost:5000/uploads/favicon.ico",
  *     "description": "Lorem ipsum...",
- *     "meta_description": "Lorem ipsum",
+ *     "metaDescription": "Lorem ipsum",
  *     "lang": "en",
- *     "show_title": true,
- *     "show_logo": true,
- *     "created_at": "2025-12-27 12:50:32.667+04"
+ *     "showTitle": true,
+ *     "showLogo": true,
+ *     "createdAt": "2025-12-27 12:50:32.667+04"
  *   },
  *   "bottomLinks": [
  *     {
@@ -148,10 +148,10 @@ const get = async (req, res, next) => {
  * @apiBody {String} logo The forum logo
  * @apiBody {String} favicon The forum favicon
  * @apiBody {String} description The forum description
- * @apiBody {String} meta_description The forum meta description
+ * @apiBody {String} metaDescription The forum meta description
  * @apiBody {String="en,fr"} lang The forum language
- * @apiBody {Boolean} show_title Whether to show the title or no
- * @apiBody {Boolean} show_logo Whether to show the logo or no
+ * @apiBody {Boolean} showTitle Whether to show the title or no
+ * @apiBody {Boolean} showLogo Whether to show the logo or no
  *
  * @apiParamExample {json} Body Example
  * {
@@ -159,9 +159,9 @@ const get = async (req, res, next) => {
  *   "logo": "/uploads/forum/1767429510485-logo.jpg",
  *   "favicon": "/uploads/forum/1767429536899-favicon.jpg",
  *   "description": "Lorem ipsum...",
- *   "meta_description": "Lorem ipsum",
- *   "show_title": true,
- *   "show_logo": true
+ *   "metaDescription": "Lorem ipsum",
+ *   "showTitle": true,
+ *   "showLogo": true
  * }
  *
  * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
@@ -169,17 +169,17 @@ const get = async (req, res, next) => {
  * @apiPermission Private
  */
 const update = async (req, res, next) => {
-  const { title, logo, favicon, description, meta_description, lang, show_title, show_logo } = req.body;
+  const { title, logo, favicon, description, metaDescription, lang, showTitle, showLogo } = req.body;
   const config = await Config.findOne();
 
   config.title = title;
   config.logo = logo;
   config.favicon = favicon;
   config.description = description;
-  config.meta_description = meta_description;
+  config.metaDescription = metaDescription;
   config.lang = lang;
-  config.show_title = show_title;
-  config.show_logo = show_logo;
+  config.showTitle = showTitle;
+  config.showLogo = showLogo;
 
   await config.save();
 
