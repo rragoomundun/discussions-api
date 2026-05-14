@@ -129,7 +129,7 @@ const registerConfirm = async (req, res, next) => {
     throw new ErrorResponse('Invalid token', httpStatus.BAD_REQUEST, 'INVALID_TOKEN');
   }
 
-  const userId = token.user_id;
+  const userId = token.userId;
 
   await token.destroy();
 
@@ -173,7 +173,7 @@ const login = async (req, res, next) => {
     return next(new ErrorResponse('Data entered invalid', httpStatus.UNAUTHORIZED, 'INVALID'));
   }
 
-  const token = await Token.findOne({ where: { user_id: user.id, type: 'register-confirm' } });
+  const token = await Token.findOne({ where: { userId: user.id, type: 'register-confirm' } });
 
   if (token) {
     return next(new ErrorResponse('Account unconfirmed', httpStatus.UNAUTHORIZED, 'UNCONFIRMED'));
@@ -207,7 +207,7 @@ const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
 
   const user = await User.findOne({ where: { email } });
-  const token = await Token.findOne({ where: { user_id: user.id } });
+  const token = await Token.findOne({ where: { userId: user.id } });
 
   if (token) {
     if (token.type === 'register-confirm') {
@@ -227,7 +227,7 @@ const forgotPassword = async (req, res, next) => {
     type: 'password-reset',
     value: 'empty',
     expire: Date.now(),
-    user_id: user.id
+    userId: user.id
   });
   const tokenDecrypted = passwordResetToken.generateToken();
 
@@ -292,7 +292,7 @@ const resetPassword = async (req, res, next) => {
     return next(new ErrorResponse('Invalid token', httpStatus.BAD_REQUEST, 'INVALID_TOKEN'));
   }
 
-  const user = await User.findOne({ where: { id: token.user_id } });
+  const user = await User.findOne({ where: { id: token.userId } });
 
   user.password = password;
 

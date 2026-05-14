@@ -5,7 +5,7 @@ const exists = async () => {
   const adminUser = await User.findOne({ where: { role: 'admin' } });
 
   if (adminUser) {
-    const token = await Token.findOne({ where: { user_id: adminUser.id, type: 'register-confirm' } });
+    const token = await Token.findOne({ where: { userId: adminUser.id, type: 'register-confirm' } });
 
     if (token) {
       return false;
