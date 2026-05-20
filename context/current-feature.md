@@ -1,16 +1,12 @@
-# Current Feature: Claude Code Initialization
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
-
-- Add the `.claude` folder with all its content
-- Add the `CLAUDE.md` file
 
 ## Notes
 
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
+- **20-05-26 — Claude Code Initialization** — Added `.claude/` skills folder and `CLAUDE.md` project configuration file.
