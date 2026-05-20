@@ -14,6 +14,9 @@ const Category = dbUtil.define(
       type: DataTypes.STRING,
       allowNull: false
     },
+    description: {
+      type: DataTypes.TEXT
+    },
     metaDescription: {
       type: DataTypes.TEXT
     },

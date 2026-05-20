@@ -12,8 +12,9 @@ import Forum from '../models/Forum.js';
  * @apiDescription Get categories and forums.
  *
  * @apiSuccess (Success (200)) {Number} .id The category id
- * @apiSuccess (Success (200)) {String} .metaDescription The category meta description.
  * @apiSuccess (Success (200)) {String} .name The category name.
+ * @apiSuccess (Success (200)) {String} .description The category description.
+ * @apiSuccess (Success (200)) {String} .metaDescription The category meta description.
  * @apiSuccess (Success (200)) {String} .index The category position.
  * @apiSuccess (Success (200)) {Number} .forums.id The forum id
  * @apiSuccess (Success (200)) {String} .forums.name Forum's name.
@@ -26,6 +27,7 @@ import Forum from '../models/Forum.js';
  *   {
  *     "id": 1,
  *     "name": "Category 1",
+ *     "description": "Lorem ipsum...",
  *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
@@ -75,6 +77,7 @@ const getForum = async (req, res, next) => {
  * @apiDescription Create and/or update categories and forums.
  *
  * @apiBody {String} .name The category name.
+ * @apiBody {String} .description The category description.
  * @apiBody {String} .metaDescription The category meta description.
  * @apiBody {String} .index The category position.
  * @apiBody {String} .forums.name Forum's name.
@@ -86,6 +89,7 @@ const getForum = async (req, res, next) => {
  * [
  *   {
  *     "name": "Category 1",
+ *     "description": "Lorem ipsum...",
  *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
@@ -104,9 +108,10 @@ const getForum = async (req, res, next) => {
  *     ]
  *   }
  * ]
- * 
+ *
  * @apiSuccess (Success (200)) {Number} .id The category id
  * @apiSuccess (Success (200)) {String} .name The category name.
+ * @apiSuccess (Success (200)) {String} .description The category description.
  * @apiSuccess (Success (200)) {String} .metaDescription The category meta description.
  * @apiSuccess (Success (200)) {String} .index The category position.
  * @apiSuccess (Success (200)) {Number} .forums.id The forum id
@@ -120,6 +125,7 @@ const getForum = async (req, res, next) => {
  *   {
  *     "id": 1,
  *     "name": "Category 1",
+ *     "description": "Lorem ipsum...",
  *     "metaDescription": "Lorem ipsum...",
  *     "index": 0,
  *     "forums": [
@@ -154,6 +160,7 @@ const updateForum = async (req, res, next) => {
 
   for (const category of req.body) {
     const categoryName = category.name;
+    const categoryDescription = category.description;
     const categoryMetaDescription = category.metaDescription;
     const categoryIndex = category.index;
     let categoryObj;
@@ -161,6 +168,7 @@ const updateForum = async (req, res, next) => {
     if (!category.id) {
       categoryObj = await Category.create({
         name: categoryName,
+        description: categoryDescription,
         metaDescription: categoryMetaDescription,
         index: categoryIndex
       });
@@ -168,6 +176,7 @@ const updateForum = async (req, res, next) => {
       categoryObj = await Category.findOne({ where: { id: category.id } });
 
       categoryObj.name = categoryName;
+      categoryObj.description = categoryDescription;
       categoryObj.metaDescription = categoryMetaDescription;
       categoryObj.index = categoryIndex;
 
@@ -177,6 +186,7 @@ const updateForum = async (req, res, next) => {
     returnedJson.push({
       id: categoryObj.id,
       name: categoryObj.name,
+      description: categoryObj.description,
       metaDescription: categoryObj.metaDescription,
       index: categoryObj.index,
       forums: []
