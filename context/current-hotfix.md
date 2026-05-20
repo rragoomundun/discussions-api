@@ -1,14 +1,14 @@
-# Current Hotfix
-
-<!-- hotfix name and short description -->
+# Category Description
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Add description field to Category model
+- Update ForumGetForum API to return the category description
+- Update ForumUpdateForum API to modify the category description
 
 ## Notes
 
