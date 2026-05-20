@@ -23,7 +23,7 @@ const Config = dbUtil.define(
     description: {
       type: DataTypes.TEXT
     },
-     metaDescription: {
+    metaDescription: {
       type: DataTypes.TEXT
     },
     lang: {
@@ -31,15 +31,15 @@ const Config = dbUtil.define(
       defaultValue: 'en',
       allowNull: false
     },
-     showTitle: {
+    showTitle: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
-     showLogo: {
+    showLogo: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-     createdAt: {
+    createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false

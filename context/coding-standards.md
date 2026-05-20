@@ -15,6 +15,10 @@
 - Validators: `validators/[validator].js`
 - Models: `models/[model].js`
 
+## Documentation
+
+Everytime that you create/update a controller create/update its documentation using apidoc conventions. Fetch the documentation for apidoc here: https://apidocjs.com/
+
 ## Naming
 
 - Models: PascalCase (`BottomLink.js`)
