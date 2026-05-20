@@ -17,7 +17,7 @@ const Forum = dbUtil.define(
     description: {
       type: DataTypes.TEXT
     },
-     metaDescription: {
+    metaDescription: {
       type: DataTypes.TEXT
     },
     index: {
