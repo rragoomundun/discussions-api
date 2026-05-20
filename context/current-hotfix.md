@@ -1,14 +1,14 @@
-# Category Description
+# Current Hotfix
+
+<!-- hotfix name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add description field to Category model
-- Update ForumGetForum API to return the category description
-- Update ForumUpdateForum API to modify the category description
+<!-- Goals and requirements -->
 
 ## Notes
 
@@ -19,3 +19,4 @@ In Progress
 <!-- Keep this updated. Earliest to latest -->
 
 - **20-05-26 — Claude Code Initialization** — Added `.claude/` skills folder and `CLAUDE.md` project configuration file.
+- **20-05-26 — Category Description** — Added `description` field to Category model, migration, and updated ForumGetForum and ForumUpdateForum endpoints.
