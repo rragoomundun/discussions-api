@@ -1,21 +1,22 @@
-# Current Feature: Upload Middleware Filename
+# Current Feature
+
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- In the upload middleware, replace the filename with `Date.now()` + the file extension only (drop the original filename)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Current filename: `${Date.now()}-${file.originalname}`
-- Target filename: `${Date.now()}${ext}` where `ext` is the extension extracted from `file.originalname`
-- Use `path.extname()` to extract the extension
+<!-- Any extra notes -->
 
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
 - **20-05-26 — Claude Code Initialization** — Added `.claude/` skills folder and `CLAUDE.md` project configuration file.
 - **20-05-26 — Claude Code Configuration 2** — Added `/hotfix` skill, updated feature skill for git flow, added apidoc section to coding standards, fixed model indentation.
+- **26-05-29 — Upload Middleware Filename** — Upload filenames now use `Date.now()` + mime-derived extension instead of the original filename.
