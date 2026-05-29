@@ -1,6 +1,14 @@
 import fs from 'fs';
 import multer from 'multer';
 
+const MIME_EXTENSIONS = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+  'image/svg+xml': '.svg',
+};
+
 const storage = multer.diskStorage({
   destination: function (req, file, calback) {
     let path = `public/uploads/`;
@@ -16,7 +24,7 @@ const storage = multer.diskStorage({
     calback(null, path);
   },
   filename: function (req, file, calback) {
-    calback(null, `${Date.now()}-${file.originalname}`);
+    calback(null, `${Date.now()}${MIME_EXTENSIONS[file.mimetype] ?? ''}`);
   }
 });
 const upload = multer({ storage });

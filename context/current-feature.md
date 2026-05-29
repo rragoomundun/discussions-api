@@ -1,18 +1,18 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Upload Middleware Filename
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- In the upload middleware, replace the filename with `Date.now()` + the file extension only (drop the original filename)
 
 ## Notes
 
-<!-- Any extra notes -->
+- Current filename: `${Date.now()}-${file.originalname}`
+- Target filename: `${Date.now()}${ext}` where `ext` is the extension extracted from `file.originalname`
+- Use `path.extname()` to extract the extension
 
 ## History
 
