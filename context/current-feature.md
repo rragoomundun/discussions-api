@@ -1,20 +1,18 @@
-# Current Feature: Create Discussion
+# Current Feature
+
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create the `Discussion` Sequelize model with fields: `id` (integer, PK), `title` (string), `open` (boolean), `createdAt` (date), `forumId` (FK)
-- Create the corresponding database migration
-- Create `POST /discussion` endpoint to create a new discussion
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Include `userId` (FK → User) on the model and migration — confirmed by user
-- `open` should default to `true` for a newly created discussion
-- Follow existing model, controller, route, and migration patterns
+<!-- Any extra notes -->
 
 ## History
 
@@ -24,3 +22,4 @@ In Progress
 - **26-05-29 — Upload Middleware Filename** — Upload filenames now use `Date.now()` + mime-derived extension instead of the original filename.
 - **26-05-30 — Format Birthday in getUser** — `birthday` in `getUser` now returns as `YYYY-MM-DD` string instead of a raw date.
 - **26-05-30 — Get Forum in Category** — Added `GET /category/:categoryId/forum` endpoint returning a category with its nested forums.
+- **26-05-30 — Create Discussion** — Added `Discussion` model, migration, and `POST /discussion` endpoint with auth and validation.
