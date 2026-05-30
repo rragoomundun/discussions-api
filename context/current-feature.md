@@ -1,18 +1,10 @@
 # Current Feature
 
-<!-- Feature name and short description -->
-
 ## Status
-
-<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-<!-- Goals and requirements -->
-
 ## Notes
-
-<!-- Any extra notes -->
 
 ## History
 
@@ -24,3 +16,4 @@
 - **26-05-30 — Get Forum in Category** — Added `GET /category/:categoryId/forum` endpoint returning a category with its nested forums.
 - **26-05-30 — Create Discussion** — Added `Discussion` model, migration, and `POST /discussion` endpoint with auth and validation.
 - **26-05-30 — Update Discussion** — Added `PUT /discussion/:discussionId` endpoint; restricted to owner, moderators, and admin.
+- **26-05-30 — Get Discussion** — Added `GET /discussion/:discussionId` endpoint returning `id`, `title`, `open`, `forum: { id, name }`, `category: { id, name }`.

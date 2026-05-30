@@ -1,6 +1,8 @@
 import httpStatus from 'http-status-codes';
 
 import Discussion from '../models/Discussion.js';
+import Forum from '../models/Forum.js';
+import Category from '../models/Category.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -102,4 +104,71 @@ const updateDiscussion = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { createDiscussion, updateDiscussion };
+/**
+ * @api {GET} /discussion/:discussionId Get Discussion
+ * @apiGroup Discussion
+ * @apiName DiscussionGetDiscussion
+ *
+ * @apiDescription Get a single discussion.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiSuccess (Success (200)) {Number} id The discussion id
+ * @apiSuccess (Success (200)) {String} title The discussion title
+ * @apiSuccess (Success (200)) {Boolean} open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Object} forum The forum the discussion belongs to
+ * @apiSuccess (Success (200)) {Number} forum.id The forum id
+ * @apiSuccess (Success (200)) {String} forum.name The forum name
+ * @apiSuccess (Success (200)) {Object} category The category the discussion belongs to
+ * @apiSuccess (Success (200)) {Number} category.id The category id
+ * @apiSuccess (Success (200)) {String} category.name The category name
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "id": 1,
+ *   "title": "My first discussion",
+ *   "open": true,
+ *   "forum": { "id": 2, "name": "General" },
+ *   "category": { "id": 1, "name": "Main" }
+ * }
+ *
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Public
+ */
+const getDiscussion = async (req, res, next) => {
+  const { discussionId } = req.params;
+
+  const discussion = await Discussion.findOne({
+    where: { id: discussionId },
+    attributes: ['id', 'title', 'open'],
+    include: [
+      {
+        model: Forum,
+        as: 'forum',
+        attributes: ['id', 'name'],
+        include: [
+          {
+            model: Category,
+            as: 'category',
+            attributes: ['id', 'name']
+          }
+        ]
+      }
+    ]
+  });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  res.status(httpStatus.OK).json({
+    id: discussion.id,
+    title: discussion.title,
+    open: discussion.open,
+    forum: { id: discussion.forum.id, name: discussion.forum.name },
+    category: { id: discussion.forum.category.id, name: discussion.forum.category.name }
+  });
+};
+
+export { createDiscussion, updateDiscussion, getDiscussion };
