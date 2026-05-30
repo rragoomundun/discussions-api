@@ -1,18 +1,20 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Create Discussion
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create the `Discussion` Sequelize model with fields: `id` (integer, PK), `title` (string), `open` (boolean), `createdAt` (date), `forumId` (FK)
+- Create the corresponding database migration
+- Create `POST /discussion` endpoint to create a new discussion
 
 ## Notes
 
-<!-- Any extra notes -->
+- Include `userId` (FK → User) on the model and migration — confirmed by user
+- `open` should default to `true` for a newly created discussion
+- Follow existing model, controller, route, and migration patterns
 
 ## History
 

@@ -33,6 +33,8 @@
     "ForumUpdateForum",
     "Category",
     "CategoryGetForumInCategory",
+    "Discussion",
+    "DiscussionCreateDiscussion",
     "File",
     "FileUpload",
     "FileDelete"
