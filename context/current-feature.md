@@ -1,18 +1,19 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Get Forum in Category
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create a `GET /category/:categoryId/forum` endpoint
+- Return the category fields: `id`, `name`, `description`, `metaDescription`
+- Include a `forums` array with each forum's: `id`, `name`, `description`, `metaDescription`, `index`
 
 ## Notes
 
-<!-- Any extra notes -->
+- Forums should be scoped to the given category (`categoryId`)
+- Follow existing route/controller/model patterns in the codebase
 
 ## History
 
