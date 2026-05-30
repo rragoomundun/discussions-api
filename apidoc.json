@@ -35,6 +35,7 @@
     "CategoryGetForumInCategory",
     "Discussion",
     "DiscussionCreateDiscussion",
+    "DiscussionUpdateDiscussion",
     "File",
     "FileUpload",
     "FileDelete"
