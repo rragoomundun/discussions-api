@@ -2,6 +2,8 @@ import httpStatus from 'http-status-codes';
 
 import Discussion from '../models/Discussion.js';
 
+import ErrorResponse from '../classes/ErrorResponse.js';
+
 /**
  * @api {POST} /discussion Create Discussion
  * @apiGroup Discussion
@@ -54,4 +56,50 @@ const createDiscussion = async (req, res, next) => {
   res.status(httpStatus.CREATED).json(discussion);
 };
 
-export { createDiscussion };
+/**
+ * @api {PUT} /discussion/:discussionId Update Discussion
+ * @apiGroup Discussion
+ * @apiName DiscussionUpdateDiscussion
+ *
+ * @apiDescription Update a discussion. Only the owner, any moderator, or the admin can update.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiBody {String} title The new discussion title.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "title": "Updated title"
+ * }
+ *
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to update this discussion
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Private
+ */
+const updateDiscussion = async (req, res, next) => {
+  const { discussionId } = req.params;
+  const { title } = req.body;
+
+  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  const { role, id: userId } = req.user;
+
+  if (role === 'regular' && discussion.userId !== userId) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  discussion.title = title;
+  discussion.updatedAt = new Date();
+
+  await discussion.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { createDiscussion, updateDiscussion };

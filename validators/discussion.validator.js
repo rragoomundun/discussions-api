@@ -20,4 +20,8 @@ const createDiscussionValidator = validation([
     })
 ]);
 
-export { createDiscussionValidator };
+const updateDiscussionValidator = validation([
+  body('title').notEmpty().withMessage('EMPTY')
+]);
+
+export { createDiscussionValidator, updateDiscussionValidator };

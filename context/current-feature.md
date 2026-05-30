@@ -1,18 +1,19 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Update Discussion
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create `PUT /discussion/:discussionId` endpoint to update a discussion
+- Update the `title` field
+- Set `updatedAt` to the current date on update
 
 ## Notes
 
-<!-- Any extra notes -->
+- Only the discussion owner, any moderator, or the admin may update a discussion — return 403 otherwise
+- Return 404 if the discussion does not exist
 
 ## History
 
