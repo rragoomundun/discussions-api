@@ -1,19 +1,18 @@
-# Current Feature: Update Discussion
+# Current Feature
+
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create `PUT /discussion/:discussionId` endpoint to update a discussion
-- Update the `title` field
-- Set `updatedAt` to the current date on update
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Only the discussion owner, any moderator, or the admin may update a discussion — return 403 otherwise
-- Return 404 if the discussion does not exist
+<!-- Any extra notes -->
 
 ## History
 
@@ -24,3 +23,4 @@ In Progress
 - **26-05-30 — Format Birthday in getUser** — `birthday` in `getUser` now returns as `YYYY-MM-DD` string instead of a raw date.
 - **26-05-30 — Get Forum in Category** — Added `GET /category/:categoryId/forum` endpoint returning a category with its nested forums.
 - **26-05-30 — Create Discussion** — Added `Discussion` model, migration, and `POST /discussion` endpoint with auth and validation.
+- **26-05-30 — Update Discussion** — Added `PUT /discussion/:discussionId` endpoint; restricted to owner, moderators, and admin.
