@@ -51,6 +51,7 @@ import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
 import fileRoutes from './routes/file.route.js';
 import forumRoutes from './routes/forum.route.js';
+import categoryRoutes from './routes/category.route.js';
 
 // Mount routers
 app.use('/api', apiRoutes);
@@ -59,6 +60,7 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/file', fileRoutes);
 app.use('/forum', forumRoutes);
+app.use('/category', categoryRoutes);
 
 // Limit the number of requests per minute in prod mode
 if (process.env.ENV === 'prod') {

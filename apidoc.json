@@ -31,6 +31,8 @@
     "Forum",
     "ForumGetForum",
     "ForumUpdateForum",
+    "Category",
+    "CategoryGetForumInCategory",
     "File",
     "FileUpload",
     "FileDelete"
