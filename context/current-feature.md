@@ -1,18 +1,17 @@
-# Current Feature
-
-<!-- Feature name and short description -->
+# Current Feature: Format Birthday in getUser
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- In `getUser`, return `birthday` formatted as `YYYY-MM-DD` instead of a raw date
 
 ## Notes
 
-<!-- Any extra notes -->
+- `birthday` may be `null` — handle gracefully
+- Update the apidoc `@apiSuccess` annotation to reflect the new format
 
 ## History
 
