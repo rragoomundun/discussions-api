@@ -34,6 +34,7 @@
     "Category",
     "CategoryGetForumInCategory",
     "Discussion",
+    "DiscussionGetDiscussion",
     "DiscussionCreateDiscussion",
     "DiscussionUpdateDiscussion",
     "File",
