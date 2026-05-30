@@ -14,7 +14,7 @@ import User from '../models/User.js';
  * @apiSuccess (Success (200)) {String} email The user email
  * @apiSuccess (Success (200)) {String} role The user role (admin, moderator, or regular)
  * @apiSuccess (Success (200)) {String} image The user profile picture
- * @apiSuccess (Success (200)) {Date} birthday The user birth date
+ * @apiSuccess (Success (200)) {String} birthday The user birth date (YYYY-MM-DD)
  * @apiSuccess (Success (200)) {String} biography The user biography
  * @apiSuccess (Success (200)) {String} location The user location
  * @apiSuccess (Success (200)) {String} gender The user gender
@@ -61,7 +61,10 @@ const getUser = async (req, res, next) => {
     ]
   });
 
-  res.status(httpStatus.OK).json(user);
+  res.status(httpStatus.OK).json({
+    ...user.toJSON(),
+    birthday: user.birthday ? user.birthday.toISOString().split('T')[0] : null
+  });
 };
 
 /**
