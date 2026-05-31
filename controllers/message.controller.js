@@ -23,6 +23,8 @@ const MESSAGES_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Object} author The message author
  * @apiSuccess (Success (200)) {Number} author.id The author id
  * @apiSuccess (Success (200)) {String} author.name The author name
+ * @apiSuccess (Success (200)) {String} author.image The author avatar
+ * @apiSuccess (Success (200)) {String} author.signature The author signature
  * @apiSuccess (Success (200)) {Object} editor The last editor of the message
  * @apiSuccess (Success (200)) {Number} editor.id The editor id
  * @apiSuccess (Success (200)) {String} editor.name The editor name
@@ -43,7 +45,7 @@ const getMessagesInDiscussion = async (req, res, next) => {
       {
         model: User,
         as: 'author',
-        attributes: ['id', 'name']
+        attributes: ['id', 'name', 'image', 'signature']
       },
       {
         model: User,
@@ -63,7 +65,7 @@ const getMessagesInDiscussion = async (req, res, next) => {
     date: m.date,
     editedDate: m.editedDate,
     editionComment: m.editionComment,
-    author: { id: m.author.id, name: m.author.name },
+    author: { id: m.author.id, name: m.author.name, image: m.author.image, signature: m.author.signature },
     editor: m.editor ? { id: m.editor.id, name: m.editor.name } : null
   }));
 
