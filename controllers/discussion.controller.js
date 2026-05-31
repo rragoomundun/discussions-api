@@ -311,4 +311,49 @@ const getDiscussionsInForum = async (req, res, next) => {
   res.status(httpStatus.OK).json(result);
 };
 
-export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion, getDiscussionsInForum };
+/**
+ * @api {PUT} /discussion/:discussionId/open Set Discussion Open
+ * @apiGroup Discussion
+ * @apiName DiscussionSetDiscussionOpen
+ *
+ * @apiDescription Set the open flag of a discussion. Only moderators and the admin can perform this action.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiBody {Boolean} open Whether the discussion is open.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "open": false
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to update this discussion
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Private
+ */
+const setDiscussionOpen = async (req, res, next) => {
+  const { discussionId } = req.params;
+  const { open } = req.body;
+  const { role } = req.user;
+
+  if (role === 'regular') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  discussion.open = open;
+
+  await discussion.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion, getDiscussionsInForum, setDiscussionOpen };
