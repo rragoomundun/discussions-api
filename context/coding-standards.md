@@ -17,7 +17,7 @@
 
 ## Documentation
 
-Everytime that you create/update a controller create/update its documentation using apidoc conventions. Fetch the documentation for apidoc here: https://apidocjs.com/
+Everytime that you create/update a controller create/update its documentation using apidoc conventions. Also update the apidoc.json file and regenerate the documentation. Fetch the documentation for apidoc here: https://apidocjs.com/
 
 ## Naming
 
