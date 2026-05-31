@@ -40,6 +40,8 @@
     "DiscussionUpdateDiscussion",
     "DiscussionDeleteDiscussion",
     "DiscussionSetDiscussionOpen",
+    "Message",
+    "MessageGetMessagesInDiscussion",
     "File",
     "FileUpload",
     "FileDelete"
