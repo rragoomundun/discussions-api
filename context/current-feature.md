@@ -18,3 +18,4 @@
 - **26-05-30 — Update Discussion** — Added `PUT /discussion/:discussionId` endpoint; restricted to owner, moderators, and admin.
 - **26-05-30 — Get Discussion** — Added `GET /discussion/:discussionId` endpoint returning `id`, `title`, `open`, `forum: { id, name }`, `category: { id, name }`.
 - **26-05-31 — Delete Discussion** — Added `DELETE /discussion/:discussionId` endpoint; restricted to moderators and admin.
+- **26-05-31 — Message Model** — Added `Message` Sequelize model, migration, and associations (Discussion↔Message, Message↔User author/editor).
