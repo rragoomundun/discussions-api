@@ -30,3 +30,4 @@
 - **26-05-31 — Delete Message** — Added `DELETE /message/:messageId` endpoint; restricted to moderators and admin; moderator cannot delete an admin's message.
 - **26-05-31 — Get Forum Meta** — `GET /forum` now returns `nbDiscussions`, `nbMessages`, and `lastMessage: { discussion: { id, name }, date }` per forum.
 - **26-05-31 — Get Forum in Category Meta** — `GET /category/:categoryId/forum` now returns `nbDiscussions`, `nbMessages`, and `lastMessage: { discussion: { id, name }, date }` per forum.
+- **26-05-31 — Get Discussions in Forum Meta** — `GET /discussion/all` now returns `nbMessages` (total message count) per discussion.
