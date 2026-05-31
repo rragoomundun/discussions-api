@@ -171,4 +171,38 @@ const getDiscussion = async (req, res, next) => {
   });
 };
 
-export { createDiscussion, updateDiscussion, getDiscussion };
+/**
+ * @api {DELETE} /discussion/:discussionId Delete Discussion
+ * @apiGroup Discussion
+ * @apiName DiscussionDeleteDiscussion
+ *
+ * @apiDescription Delete a discussion. Only moderators and the admin can delete.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to delete this discussion
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Private
+ */
+const deleteDiscussion = async (req, res, next) => {
+  const { discussionId } = req.params;
+  const { role } = req.user;
+
+  if (role === 'regular') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  await discussion.destroy();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion };

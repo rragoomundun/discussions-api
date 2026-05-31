@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createDiscussion, updateDiscussion, getDiscussion } from '../controllers/discussion.controller.js';
+import { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion } from '../controllers/discussion.controller.js';
 
 import { createDiscussionValidator, updateDiscussionValidator } from '../validators/discussion.validator.js';
 
@@ -11,6 +11,7 @@ const router = express.Router();
 router
   .get('/:discussionId', getDiscussion)
   .post('/', authorizeMiddleware, createDiscussionValidator, createDiscussion)
-  .put('/:discussionId', authorizeMiddleware, updateDiscussionValidator, updateDiscussion);
+  .put('/:discussionId', authorizeMiddleware, updateDiscussionValidator, updateDiscussion)
+  .delete('/:discussionId', authorizeMiddleware, deleteDiscussion);
 
 export default router;
