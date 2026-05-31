@@ -21,3 +21,4 @@
 - **26-05-31 — Message Model** — Added `Message` Sequelize model, migration, and associations (Discussion↔Message, Message↔User author/editor).
 - **26-05-31 — Get Discussions in Forum** — Added `GET /discussion/all?forumId&page` endpoint; 20/page, ordered by most recent last message; returns discussion with user and lastMessage fields. Also added `date` field to `Message` model.
 - **26-05-31 — Discussion Page Count** — `GET /discussion/:discussionId` now returns a `pages` field (total message pages, 20 per page, minimum 1).
+- **26-05-31 — Set Discussion Open** — Added `PUT /discussion/:discussionId/open` endpoint; sets the `open` boolean; restricted to moderators and admin.
