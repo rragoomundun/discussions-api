@@ -2,6 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import Message from '../models/Message.js';
 import User from '../models/User.js';
+import ErrorResponse from '../classes/ErrorResponse.js';
 
 const MESSAGES_PER_PAGE = 20;
 
@@ -119,4 +120,90 @@ const postMessage = async (req, res, next) => {
   });
 };
 
-export { getMessagesInDiscussion, postMessage };
+/**
+ * @api {PUT} /message/:messageId Update Message
+ * @apiGroup Message
+ * @apiName MessageUpdateMessage
+ *
+ * @apiDescription Update a message. Only the owner, any moderator, or the admin can update. A moderator cannot update an admin or another moderator's message.
+ *
+ * @apiParam {Number} messageId The message id.
+ *
+ * @apiBody {String} message The new message content.
+ * @apiBody {String} [editionComment] An optional comment about the edit.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "message": "Updated content",
+ *   "editionComment": "Fixed a typo"
+ * }
+ *
+ * @apiSuccess (Success (200)) {Number} id The message id
+ * @apiSuccess (Success (200)) {String} message The message content
+ * @apiSuccess (Success (200)) {Date} date The message date
+ * @apiSuccess (Success (200)) {Date} editedDate The date the message was last edited
+ * @apiSuccess (Success (200)) {String} editionComment The comment left when editing
+ * @apiSuccess (Success (200)) {Object} author The message author
+ * @apiSuccess (Success (200)) {Number} author.id The author id
+ * @apiSuccess (Success (200)) {String} author.name The author name
+ * @apiSuccess (Success (200)) {String} author.image The author avatar
+ * @apiSuccess (Success (200)) {String} author.signature The author signature
+ * @apiSuccess (Success (200)) {Object} editor The editor of the message
+ * @apiSuccess (Success (200)) {Number} editor.id The editor id
+ * @apiSuccess (Success (200)) {String} editor.name The editor name
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to update this message
+ * @apiError (Error (404)) NOT_FOUND The message does not exist
+ *
+ * @apiPermission Private
+ */
+const updateMessage = async (req, res, next) => {
+  const { messageId } = req.params;
+  const { message, editionComment } = req.body;
+  const { id: userId, role } = req.user;
+
+  const msg = await Message.findOne({
+    where: { id: messageId },
+    include: [{ model: User, as: 'author', attributes: ['id', 'name', 'image', 'signature', 'role'] }]
+  });
+
+  if (!msg) {
+    return next(new ErrorResponse('Message not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (role === 'regular' && msg.authorId !== userId) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  if (role === 'moderator' && msg.authorId !== userId && (msg.author.role === 'admin' || msg.author.role === 'moderator')) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  const isOwner = msg.authorId === userId;
+
+  msg.message = message;
+  msg.editedDate = new Date();
+  msg.editionComment = editionComment ?? null;
+
+  if (!isOwner) {
+    msg.editorId = userId;
+  }
+
+  await msg.save();
+
+  const editor = !isOwner ? { id: userId, name: req.user.name } : null;
+
+  res.status(httpStatus.OK).json({
+    id: msg.id,
+    message: msg.message,
+    date: msg.date,
+    editedDate: msg.editedDate,
+    editionComment: msg.editionComment,
+    author: { id: msg.author.id, name: msg.author.name, image: msg.author.image, signature: msg.author.signature },
+    editor
+  });
+};
+
+export { getMessagesInDiscussion, postMessage, updateMessage };

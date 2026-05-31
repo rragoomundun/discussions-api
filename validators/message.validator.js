@@ -24,4 +24,8 @@ const postMessageValidator = validation([
     })
 ]);
 
-export { getMessagesInDiscussionValidator, postMessageValidator };
+const updateMessageValidator = validation([
+  body('message').notEmpty().withMessage('EMPTY')
+]);
+
+export { getMessagesInDiscussionValidator, postMessageValidator, updateMessageValidator };
