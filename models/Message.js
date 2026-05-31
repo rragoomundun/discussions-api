@@ -14,6 +14,11 @@ const Message = dbUtil.define(
       type: DataTypes.TEXT,
       allowNull: false
     },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    },
     editedDate: {
       type: DataTypes.DATE
     },

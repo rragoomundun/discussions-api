@@ -1,8 +1,13 @@
 import httpStatus from 'http-status-codes';
+import { Sequelize, QueryTypes } from 'sequelize';
 
 import Discussion from '../models/Discussion.js';
 import Forum from '../models/Forum.js';
 import Category from '../models/Category.js';
+import Message from '../models/Message.js';
+import User from '../models/User.js';
+
+import sequelize from '../utils/db.util.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -205,4 +210,97 @@ const deleteDiscussion = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion };
+const DISCUSSIONS_PER_PAGE = 20;
+
+/**
+ * @api {GET} /discussion/all Get Discussions in Forum
+ * @apiGroup Discussion
+ * @apiName DiscussionGetDiscussionsInForum
+ *
+ * @apiDescription Get paginated discussions in a forum, ordered by most recent last message.
+ *
+ * @apiQuery {Number} forumId The forum id.
+ * @apiQuery {Number} [page=1] The page number.
+ *
+ * @apiSuccess (Success (200)) {Number} id The discussion id
+ * @apiSuccess (Success (200)) {String} title The discussion title
+ * @apiSuccess (Success (200)) {Boolean} open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Date} createdAt The creation date
+ * @apiSuccess (Success (200)) {Object} user The discussion author
+ * @apiSuccess (Success (200)) {Number} user.id The author id
+ * @apiSuccess (Success (200)) {String} user.name The author name
+ * @apiSuccess (Success (200)) {Object} lastMessage The last message in the discussion
+ * @apiSuccess (Success (200)) {Number} lastMessage.messageId The last message id
+ * @apiSuccess (Success (200)) {Date} lastMessage.date The last message date
+ * @apiSuccess (Success (200)) {Object} lastMessage.user The last message author
+ * @apiSuccess (Success (200)) {Number} lastMessage.user.id The last message author id
+ * @apiSuccess (Success (200)) {String} lastMessage.user.name The last message author name
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Public
+ */
+const getDiscussionsInForum = async (req, res, next) => {
+  const forumId = parseInt(req.query.forumId);
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * DISCUSSIONS_PER_PAGE;
+
+  const discussions = await Discussion.findAll({
+    where: { forumId },
+    attributes: ['id', 'title', 'open', 'createdAt'],
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name']
+      }
+    ],
+    order: [
+      [Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`), 'DESC NULLS LAST']
+    ],
+    limit: DISCUSSIONS_PER_PAGE,
+    offset
+  });
+
+  if (discussions.length === 0) {
+    return res.status(httpStatus.OK).json([]);
+  }
+
+  const discussionIds = discussions.map((d) => d.id);
+
+  const lastMessages = await sequelize.query(
+    `SELECT DISTINCT ON ("discussionId")
+      m.id, m.date, m."discussionId", u.id AS "userId", u.name AS "userName"
+     FROM "Message" m
+     JOIN "User" u ON u.id = m."authorId"
+     WHERE m."discussionId" IN (:discussionIds)
+     ORDER BY "discussionId", m.date DESC`,
+    {
+      replacements: { discussionIds },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  const lastMessageMap = {};
+
+  for (const msg of lastMessages) {
+    lastMessageMap[msg.discussionId] = {
+      messageId: msg.id,
+      date: msg.date,
+      user: { id: msg.userId, name: msg.userName }
+    };
+  }
+
+  const result = discussions.map((d) => ({
+    id: d.id,
+    title: d.title,
+    open: d.open,
+    createdAt: d.createdAt,
+    user: { id: d.user.id, name: d.user.name },
+    lastMessage: lastMessageMap[d.id] || null
+  }));
+
+  res.status(httpStatus.OK).json(result);
+};
+
+export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion, getDiscussionsInForum };

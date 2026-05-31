@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 import validation from './validation.js';
 
@@ -24,4 +24,8 @@ const updateDiscussionValidator = validation([
   body('title').notEmpty().withMessage('EMPTY')
 ]);
 
-export { createDiscussionValidator, updateDiscussionValidator };
+const getDiscussionsInForumValidator = validation([
+  query('forumId').notEmpty().withMessage('EMPTY').isInt().withMessage('INVALID')
+]);
+
+export { createDiscussionValidator, updateDiscussionValidator, getDiscussionsInForumValidator };
