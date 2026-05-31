@@ -264,7 +264,10 @@ const getDiscussionsInForum = async (req, res, next) => {
       }
     ],
     order: [
-      [Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`), 'DESC NULLS LAST']
+      [
+        Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
+        'DESC NULLS LAST'
+      ]
     ],
     limit: DISCUSSIONS_PER_PAGE,
     offset
@@ -356,4 +359,45 @@ const setDiscussionOpen = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { createDiscussion, updateDiscussion, getDiscussion, deleteDiscussion, getDiscussionsInForum, setDiscussionOpen };
+/**
+ * @api {GET} /discussion/pages Get Discussion Pages
+ * @apiGroup Discussion
+ * @apiName DiscussionGetDiscussionPages
+ *
+ * @apiDescription Get the number of discussion pages in a forum.
+ *
+ * @apiQuery {Number} forumId The forum id.
+ *
+ * @apiSuccess (Success (200)) {Number} pages The number of discussion pages
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "pages": 4
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Public
+ */
+const getDiscussionPages = async (req, res, next) => {
+  const forumId = parseInt(req.query.forumId);
+
+  const count = await Discussion.count({ where: { forumId } });
+  let pages = Math.ceil(count / DISCUSSIONS_PER_PAGE);
+
+  if (pages === 0) {
+    pages = 1;
+  }
+
+  res.status(httpStatus.OK).json({ pages });
+};
+
+export {
+  createDiscussion,
+  updateDiscussion,
+  getDiscussion,
+  deleteDiscussion,
+  getDiscussionsInForum,
+  setDiscussionOpen,
+  getDiscussionPages
+};
