@@ -237,6 +237,7 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Object} user The discussion author
  * @apiSuccess (Success (200)) {Number} user.id The author id
  * @apiSuccess (Success (200)) {String} user.name The author name
+ * @apiSuccess (Success (200)) {Number} nbMessages The number of messages in the discussion
  * @apiSuccess (Success (200)) {Object} lastMessage The last message in the discussion
  * @apiSuccess (Success (200)) {Number} lastMessage.messageId The last message id
  * @apiSuccess (Success (200)) {Date} lastMessage.date The last message date
@@ -279,18 +280,23 @@ const getDiscussionsInForum = async (req, res, next) => {
 
   const discussionIds = discussions.map((d) => d.id);
 
-  const lastMessages = await sequelize.query(
-    `SELECT DISTINCT ON ("discussionId")
-      m.id, m.date, m."discussionId", u.id AS "userId", u.name AS "userName"
-     FROM "Message" m
-     JOIN "User" u ON u.id = m."authorId"
-     WHERE m."discussionId" IN (:discussionIds)
-     ORDER BY "discussionId", m.date DESC`,
-    {
-      replacements: { discussionIds },
-      type: QueryTypes.SELECT
-    }
-  );
+  const [lastMessages, messageCounts] = await Promise.all([
+    sequelize.query(
+      `SELECT DISTINCT ON ("discussionId")
+        m.id, m.date, m."discussionId", u.id AS "userId", u.name AS "userName"
+       FROM "Message" m
+       JOIN "User" u ON u.id = m."authorId"
+       WHERE m."discussionId" IN (:discussionIds)
+       ORDER BY "discussionId", m.date DESC`,
+      { replacements: { discussionIds }, type: QueryTypes.SELECT }
+    ),
+    Message.findAll({
+      attributes: ['discussionId', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+      where: { discussionId: discussionIds },
+      group: ['discussionId'],
+      raw: true
+    })
+  ]);
 
   const lastMessageMap = {};
 
@@ -302,12 +308,15 @@ const getDiscussionsInForum = async (req, res, next) => {
     };
   }
 
+  const messageCountMap = Object.fromEntries(messageCounts.map((r) => [r.discussionId, parseInt(r.count)]));
+
   const result = discussions.map((d) => ({
     id: d.id,
     title: d.title,
     open: d.open,
     createdAt: d.createdAt,
     user: { id: d.user.id, name: d.user.name },
+    nbMessages: messageCountMap[d.id] ?? 0,
     lastMessage: lastMessageMap[d.id] || null
   }));
 
