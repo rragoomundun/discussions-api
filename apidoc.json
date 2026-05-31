@@ -45,6 +45,7 @@
     "MessageGetMessagesInDiscussion",
     "MessagePostMessage",
     "MessageUpdateMessage",
+    "MessageDeleteMessage",
     "File",
     "FileUpload",
     "FileDelete"

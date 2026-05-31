@@ -206,4 +206,45 @@ const updateMessage = async (req, res, next) => {
   });
 };
 
-export { getMessagesInDiscussion, postMessage, updateMessage };
+/**
+ * @api {DELETE} /message/:messageId Delete Message
+ * @apiGroup Message
+ * @apiName MessageDeleteMessage
+ *
+ * @apiDescription Delete a message. Only moderators and the admin can delete. A moderator cannot delete an admin message.
+ *
+ * @apiParam {Number} messageId The message id.
+ *
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to delete this message
+ * @apiError (Error (404)) NOT_FOUND The message does not exist
+ *
+ * @apiPermission Private
+ */
+const deleteMessage = async (req, res, next) => {
+  const { messageId } = req.params;
+  const { role } = req.user;
+
+  if (role === 'regular') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  const msg = await Message.findOne({
+    where: { id: messageId },
+    include: [{ model: User, as: 'author', attributes: ['role'] }]
+  });
+
+  if (!msg) {
+    return next(new ErrorResponse('Message not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (role === 'moderator' && msg.author.role === 'admin') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  await msg.destroy();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { getMessagesInDiscussion, postMessage, updateMessage, deleteMessage };
