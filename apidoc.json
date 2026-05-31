@@ -43,6 +43,7 @@
     "DiscussionSetDiscussionOpen",
     "Message",
     "MessageGetMessagesInDiscussion",
+    "MessagePostMessage",
     "File",
     "FileUpload",
     "FileDelete"
