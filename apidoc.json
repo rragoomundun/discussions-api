@@ -35,6 +35,7 @@
     "CategoryGetForumInCategory",
     "Discussion",
     "DiscussionGetDiscussionsInForum",
+    "DiscussionGetDiscussionPages",
     "DiscussionGetDiscussion",
     "DiscussionCreateDiscussion",
     "DiscussionUpdateDiscussion",
