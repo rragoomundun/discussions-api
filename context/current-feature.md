@@ -26,3 +26,4 @@
 - **26-05-31 — Get Messages: Extend Author Fields** — `author` in `GET /message/all` now also returns `image` and `signature`.
 - **26-05-31 — Get Discussion Pages** — Added `GET /discussion/pages?forumId` endpoint returning `{ pages }` (Math.ceil(count / 20)).
 - **26-05-31 — Post Message** — Added `POST /message` endpoint; auth required; body: `message`, `discussionId`; returns message with `author: { id, name, image, signature }`.
+- **26-05-31 — Update Message** — Added `PUT /message/:messageId` endpoint; restricted to owner, moderators (not on admin/moderator messages), and admin; sets `editedDate`, optional `editionComment`, and `editorId` when not the owner; returns message with `author { id, name, image, signature }` and `editor { id, name }`.
