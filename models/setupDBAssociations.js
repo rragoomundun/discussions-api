@@ -5,6 +5,7 @@ import Token from './Token.js';
 import Category from './Category.js';
 import Forum from './Forum.js';
 import Discussion from './Discussion.js';
+import Message from './Message.js';
 
 const setupDBAssociations = () => {
   User.hasMany(Token, {
@@ -73,6 +74,39 @@ const setupDBAssociations = () => {
     },
     targetKey: 'id',
     as: 'user'
+  });
+
+  Discussion.hasMany(Message, {
+    foreignKey: {
+      name: 'discussionId',
+      allowNull: false
+    },
+    sourceKey: 'id',
+    as: 'messages'
+  });
+  Message.belongsTo(Discussion, {
+    foreignKey: {
+      name: 'discussionId',
+      allowNull: false
+    },
+    targetKey: 'id',
+    as: 'discussion'
+  });
+
+  Message.belongsTo(User, {
+    foreignKey: {
+      name: 'authorId',
+      allowNull: false
+    },
+    targetKey: 'id',
+    as: 'author'
+  });
+  Message.belongsTo(User, {
+    foreignKey: {
+      name: 'editorId'
+    },
+    targetKey: 'id',
+    as: 'editor'
   });
 };
 
