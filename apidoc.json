@@ -39,6 +39,7 @@
     "DiscussionCreateDiscussion",
     "DiscussionUpdateDiscussion",
     "DiscussionDeleteDiscussion",
+    "DiscussionSetDiscussionOpen",
     "File",
     "FileUpload",
     "FileDelete"
