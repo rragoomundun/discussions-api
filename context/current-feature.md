@@ -29,3 +29,4 @@
 - **26-05-31 — Update Message** — Added `PUT /message/:messageId` endpoint; restricted to owner, moderators (not on admin/moderator messages), and admin; sets `editedDate`, optional `editionComment`, and `editorId` when not the owner; returns message with `author { id, name, image, signature }` and `editor { id, name }`.
 - **26-05-31 — Delete Message** — Added `DELETE /message/:messageId` endpoint; restricted to moderators and admin; moderator cannot delete an admin's message.
 - **26-05-31 — Get Forum Meta** — `GET /forum` now returns `nbDiscussions`, `nbMessages`, and `lastMessage: { discussion: { id, name }, date }` per forum.
+- **26-05-31 — Get Forum in Category Meta** — `GET /category/:categoryId/forum` now returns `nbDiscussions`, `nbMessages`, and `lastMessage: { discussion: { id, name }, date }` per forum.
