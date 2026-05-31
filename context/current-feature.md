@@ -24,3 +24,4 @@
 - **26-05-31 — Set Discussion Open** — Added `PUT /discussion/:discussionId/open` endpoint; sets the `open` boolean; restricted to moderators and admin.
 - **26-05-31 — Get Messages in Discussion** — Added `GET /message/all?discussionId&page` endpoint; 20/page, ordered oldest to newest; returns messages with `author` and optional `editor` fields.
 - **26-05-31 — Get Messages: Extend Author Fields** — `author` in `GET /message/all` now also returns `image` and `signature`.
+- **26-05-31 — Get Discussion Pages** — Added `GET /discussion/pages?forumId` endpoint returning `{ pages }` (Math.ceil(count / 20)).
