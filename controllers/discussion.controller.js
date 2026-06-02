@@ -396,11 +396,16 @@ const setDiscussionOpen = async (req, res, next) => {
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (404)) NOT_FOUND The forum does not exist
  *
  * @apiPermission Public
  */
 const getDiscussionPages = async (req, res, next) => {
   const forumId = parseInt(req.query.forumId);
+
+  if ((await Forum.count({ where: { id: forumId } })) === 0) {
+    return next(new ErrorResponse('Forum not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
 
   const count = await Discussion.count({ where: { forumId } });
   let pages = Math.ceil(count / DISCUSSIONS_PER_PAGE);
