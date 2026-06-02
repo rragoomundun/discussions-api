@@ -230,20 +230,27 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiQuery {Number} forumId The forum id.
  * @apiQuery {Number} [page=1] The page number.
  *
- * @apiSuccess (Success (200)) {Number} id The discussion id
- * @apiSuccess (Success (200)) {String} title The discussion title
- * @apiSuccess (Success (200)) {Boolean} open Whether the discussion is open
- * @apiSuccess (Success (200)) {Date} createdAt The creation date
- * @apiSuccess (Success (200)) {Object} user The discussion author
- * @apiSuccess (Success (200)) {Number} user.id The author id
- * @apiSuccess (Success (200)) {String} user.name The author name
- * @apiSuccess (Success (200)) {Number} nbMessages The number of messages in the discussion
- * @apiSuccess (Success (200)) {Object} lastMessage The last message in the discussion
- * @apiSuccess (Success (200)) {Number} lastMessage.messageId The last message id
- * @apiSuccess (Success (200)) {Date} lastMessage.date The last message date
- * @apiSuccess (Success (200)) {Object} lastMessage.user The last message author
- * @apiSuccess (Success (200)) {Number} lastMessage.user.id The last message author id
- * @apiSuccess (Success (200)) {String} lastMessage.user.name The last message author name
+ * @apiSuccess (Success (200)) {Object} category The category the forum belongs to
+ * @apiSuccess (Success (200)) {Number} category.id The category id
+ * @apiSuccess (Success (200)) {String} category.name The category name
+ * @apiSuccess (Success (200)) {Object} forum The forum the discussions belong to
+ * @apiSuccess (Success (200)) {Number} forum.id The forum id
+ * @apiSuccess (Success (200)) {String} forum.name The forum name
+ * @apiSuccess (Success (200)) {Object[]} discussions The list of discussions
+ * @apiSuccess (Success (200)) {Number} discussions.id The discussion id
+ * @apiSuccess (Success (200)) {String} discussions.title The discussion title
+ * @apiSuccess (Success (200)) {Boolean} discussions.open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Date} discussions.createdAt The creation date
+ * @apiSuccess (Success (200)) {Object} discussions.user The discussion author
+ * @apiSuccess (Success (200)) {Number} discussions.user.id The author id
+ * @apiSuccess (Success (200)) {String} discussions.user.name The author name
+ * @apiSuccess (Success (200)) {Number} discussions.nbMessages The number of messages in the discussion
+ * @apiSuccess (Success (200)) {Object} discussions.lastMessage The last message in the discussion
+ * @apiSuccess (Success (200)) {Number} discussions.lastMessage.messageId The last message id
+ * @apiSuccess (Success (200)) {Date} discussions.lastMessage.date The last message date
+ * @apiSuccess (Success (200)) {Object} discussions.lastMessage.user The last message author
+ * @apiSuccess (Success (200)) {Number} discussions.lastMessage.user.id The last message author id
+ * @apiSuccess (Success (200)) {String} discussions.lastMessage.user.name The last message author name
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
  *
@@ -254,28 +261,32 @@ const getDiscussionsInForum = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const offset = (page - 1) * DISCUSSIONS_PER_PAGE;
 
-  const discussions = await Discussion.findAll({
-    where: { forumId },
-    attributes: ['id', 'title', 'open', 'createdAt'],
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name']
-      }
-    ],
-    order: [
-      [
-        Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
-        'DESC NULLS LAST'
-      ]
-    ],
-    limit: DISCUSSIONS_PER_PAGE,
-    offset
-  });
+  const [forum, discussions] = await Promise.all([
+    Forum.findOne({
+      where: { id: forumId },
+      attributes: ['id', 'name'],
+      include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }]
+    }),
+    Discussion.findAll({
+      where: { forumId },
+      attributes: ['id', 'title', 'open', 'createdAt'],
+      include: [{ model: User, as: 'user', attributes: ['id', 'name'] }],
+      order: [
+        [
+          Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
+          'DESC NULLS LAST'
+        ]
+      ],
+      limit: DISCUSSIONS_PER_PAGE,
+      offset
+    })
+  ]);
+
+  const category = forum?.category ? { id: forum.category.id, name: forum.category.name } : null;
+  const forumMeta = forum ? { id: forum.id, name: forum.name } : null;
 
   if (discussions.length === 0) {
-    return res.status(httpStatus.OK).json([]);
+    return res.status(httpStatus.OK).json({ category, forum: forumMeta, discussions: [] });
   }
 
   const discussionIds = discussions.map((d) => d.id);
@@ -320,7 +331,7 @@ const getDiscussionsInForum = async (req, res, next) => {
     lastMessage: lastMessageMap[d.id] || null
   }));
 
-  res.status(httpStatus.OK).json(result);
+  res.status(httpStatus.OK).json({ category, forum: forumMeta, discussions: result });
 };
 
 /**
