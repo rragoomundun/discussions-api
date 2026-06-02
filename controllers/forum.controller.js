@@ -8,6 +8,8 @@ import Message from '../models/Message.js';
 
 import sequelize from '../utils/db.util.js';
 
+import ErrorResponse from '../classes/ErrorResponse.js';
+
 /**
  * @api {GET} /forum Get Forum
  * @apiGroup Forum
@@ -307,4 +309,60 @@ const updateForum = async (req, res, next) => {
   res.status(httpStatus.OK).json(returnedJson);
 };
 
-export { getForum, updateForum };
+const DISCUSSIONS_PER_PAGE = 20;
+
+/**
+ * @api {GET} /forum/:forumId/meta Get Forum Meta
+ * @apiGroup Forum
+ * @apiName ForumGetForumMeta
+ *
+ * @apiDescription Get meta information for a forum: id, name, category, and number of discussion pages.
+ *
+ * @apiParam {Number} forumId The forum id.
+ *
+ * @apiSuccess (Success (200)) {Number} id The forum id
+ * @apiSuccess (Success (200)) {String} name The forum name
+ * @apiSuccess (Success (200)) {Object} category The category the forum belongs to
+ * @apiSuccess (Success (200)) {Number} category.id The category id
+ * @apiSuccess (Success (200)) {String} category.name The category name
+ * @apiSuccess (Success (200)) {Number} nbPages The number of discussion pages (20 per page, minimum 1)
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "id": 1,
+ *   "name": "General",
+ *   "category": { "id": 1, "name": "Main" },
+ *   "nbPages": 3
+ * }
+ *
+ * @apiError (Error (404)) NOT_FOUND The forum does not exist
+ *
+ * @apiPermission Public
+ */
+const getForumMeta = async (req, res, next) => {
+  const { forumId } = req.params;
+
+  const [forum, nbDiscussions] = await Promise.all([
+    Forum.findOne({
+      where: { id: forumId },
+      attributes: ['id', 'name'],
+      include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }]
+    }),
+    Discussion.count({ where: { forumId } })
+  ]);
+
+  if (!forum) {
+    return next(new ErrorResponse('Forum not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  const nbPages = Math.max(1, Math.ceil(nbDiscussions / DISCUSSIONS_PER_PAGE));
+
+  res.status(httpStatus.OK).json({
+    id: forum.id,
+    name: forum.name,
+    category: { id: forum.category.id, name: forum.category.name },
+    nbPages
+  });
+};
+
+export { getForum, updateForum, getForumMeta };

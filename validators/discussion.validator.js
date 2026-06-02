@@ -32,8 +32,4 @@ const setDiscussionOpenValidator = validation([
   body('open').notEmpty().withMessage('EMPTY').isBoolean().withMessage('INVALID')
 ]);
 
-const getDiscussionPagesValidator = validation([
-  query('forumId').notEmpty().withMessage('EMPTY').isInt().withMessage('INVALID')
-]);
-
-export { createDiscussionValidator, updateDiscussionValidator, getDiscussionsInForumValidator, setDiscussionOpenValidator, getDiscussionPagesValidator };
+export { createDiscussionValidator, updateDiscussionValidator, getDiscussionsInForumValidator, setDiscussionOpenValidator };
