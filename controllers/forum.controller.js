@@ -316,12 +316,14 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiGroup Forum
  * @apiName ForumGetForumMeta
  *
- * @apiDescription Get meta information for a forum: id, name, category, and number of discussion pages.
+ * @apiDescription Get meta information for a forum: id, name, description, metaDescription, category, and number of discussion pages.
  *
  * @apiParam {Number} forumId The forum id.
  *
  * @apiSuccess (Success (200)) {Number} id The forum id
  * @apiSuccess (Success (200)) {String} name The forum name
+ * @apiSuccess (Success (200)) {String} description The forum description
+ * @apiSuccess (Success (200)) {String} metaDescription The forum meta description
  * @apiSuccess (Success (200)) {Object} category The category the forum belongs to
  * @apiSuccess (Success (200)) {Number} category.id The category id
  * @apiSuccess (Success (200)) {String} category.name The category name
@@ -331,6 +333,8 @@ const DISCUSSIONS_PER_PAGE = 20;
  * {
  *   "id": 1,
  *   "name": "General",
+ *   "description": "Talk about anything",
+ *   "metaDescription": "General discussion forum",
  *   "category": { "id": 1, "name": "Main" },
  *   "nbPages": 3
  * }
@@ -345,7 +349,7 @@ const getForumMeta = async (req, res, next) => {
   const [forum, nbDiscussions] = await Promise.all([
     Forum.findOne({
       where: { id: forumId },
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', 'description', 'metaDescription'],
       include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }]
     }),
     Discussion.count({ where: { forumId } })
@@ -360,6 +364,8 @@ const getForumMeta = async (req, res, next) => {
   res.status(httpStatus.OK).json({
     id: forum.id,
     name: forum.name,
+    description: forum.description,
+    metaDescription: forum.metaDescription,
     category: { id: forum.category.id, name: forum.category.name },
     nbPages
   });
