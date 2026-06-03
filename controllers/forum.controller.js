@@ -114,10 +114,7 @@ const getForum = async (req, res, next) => {
   const discussionCountMap = Object.fromEntries(discussionCounts.map((r) => [r.forumId, parseInt(r.count)]));
   const messageCountMap = Object.fromEntries(messageCounts.map((r) => [r.forumId, parseInt(r.count)]));
   const lastMessageMap = Object.fromEntries(
-    lastMessages.map((r) => [
-      r.forumId,
-      { discussion: { id: r.discussionId, name: r.discussionTitle }, date: r.date }
-    ])
+    lastMessages.map((r) => [r.forumId, { discussion: { id: r.discussionId, name: r.discussionTitle }, date: r.date }])
   );
 
   const result = categories.map((category) => {

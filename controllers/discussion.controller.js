@@ -127,7 +127,7 @@ const updateDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Object} category The category the discussion belongs to
  * @apiSuccess (Success (200)) {Number} category.id The category id
  * @apiSuccess (Success (200)) {String} category.name The category name
- * @apiSuccess (Success (200)) {Number} pages The total number of message pages (20 messages per page)
+ * @apiSuccess (Success (200)) {Number} nbPages The total number of message pages (20 messages per page)
  *
  * @apiSuccessExample Success Example
  * {
@@ -136,7 +136,7 @@ const updateDiscussion = async (req, res, next) => {
  *   "open": true,
  *   "forum": { "id": 2, "name": "General" },
  *   "category": { "id": 1, "name": "Main" },
- *   "pages": 3
+ *   "nbPages": 3
  * }
  *
  * @apiError (Error (404)) NOT_FOUND The discussion does not exist
@@ -172,7 +172,7 @@ const getDiscussion = async (req, res, next) => {
     return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
   }
 
-  const pages = Math.max(1, Math.ceil(messageCount / 20));
+  const nbPages = Math.max(1, Math.ceil(messageCount / 20));
 
   res.status(httpStatus.OK).json({
     id: discussion.id,
@@ -180,7 +180,7 @@ const getDiscussion = async (req, res, next) => {
     open: discussion.open,
     forum: { id: discussion.forum.id, name: discussion.forum.name },
     category: { id: discussion.forum.category.id, name: discussion.forum.category.name },
-    pages
+    nbPages
   });
 };
 

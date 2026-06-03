@@ -177,7 +177,11 @@ const updateMessage = async (req, res, next) => {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
-  if (role === 'moderator' && msg.authorId !== userId && (msg.author.role === 'admin' || msg.author.role === 'moderator')) {
+  if (
+    role === 'moderator' &&
+    msg.authorId !== userId &&
+    (msg.author.role === 'admin' || msg.author.role === 'moderator')
+  ) {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
