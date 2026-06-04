@@ -36,3 +36,4 @@
 - **26-06-02 — Get Forum Meta — Description Fields** — `GET /forum/:forumId/meta` now also returns `description` and `metaDescription` from the Forum model.
 - **26-06-04 — Get Messages: Author Role and isStarter** — `author` in `GET /message/all` now returns `role` and `isStarter` (true when the author is the discussion creator).
 - **26-06-04 — Get Discussion — Add Author Field** — `GET /discussion/:discussionId` now returns `author: { id, name, image }`.
+- **26-06-04 — Get Discussion — Add createdAt Field** — `GET /discussion/:discussionId` now returns `createdAt`.
