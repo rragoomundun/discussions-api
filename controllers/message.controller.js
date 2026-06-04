@@ -107,11 +107,16 @@ const getMessagesInDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (201)) {Number} id The message id
  * @apiSuccess (Success (201)) {String} message The message content
  * @apiSuccess (Success (201)) {Date} date The message date
+ * @apiSuccess (Success (201)) {Date} editedDate The date the message was last edited
+ * @apiSuccess (Success (201)) {String} editionComment The comment left when editing
  * @apiSuccess (Success (201)) {Object} author The message author
  * @apiSuccess (Success (201)) {Number} author.id The author id
  * @apiSuccess (Success (201)) {String} author.name The author name
  * @apiSuccess (Success (201)) {String} author.image The author avatar
  * @apiSuccess (Success (201)) {String} author.signature The author signature
+ * @apiSuccess (Success (201)) {String} author.role The author role
+ * @apiSuccess (Success (201)) {Boolean} author.isStarter Whether the author started the discussion
+ * @apiSuccess (Success (201)) {Object} editor The last editor of the message
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
  * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
@@ -122,16 +127,27 @@ const postMessage = async (req, res, next) => {
   const { message, discussionId } = req.body;
   const { id: authorId } = req.user;
 
-  const [newMessage, author] = await Promise.all([
+  const [newMessage, author, discussion] = await Promise.all([
     Message.create({ message, discussionId, authorId, date: new Date() }),
-    User.findOne({ where: { id: authorId }, attributes: ['id', 'name', 'image', 'signature'] })
+    User.findOne({ where: { id: authorId }, attributes: ['id', 'name', 'image', 'signature', 'role'] }),
+    Discussion.findOne({ where: { id: discussionId }, attributes: ['userId'] })
   ]);
 
   res.status(httpStatus.CREATED).json({
     id: newMessage.id,
     message: newMessage.message,
     date: newMessage.date,
-    author: { id: author.id, name: author.name, image: author.image, signature: author.signature }
+    editedDate: null,
+    editionComment: null,
+    author: {
+      id: author.id,
+      name: author.name,
+      image: author.image,
+      signature: author.signature,
+      role: author.role,
+      isStarter: author.id === discussion.userId
+    },
+    editor: null
   });
 };
 
