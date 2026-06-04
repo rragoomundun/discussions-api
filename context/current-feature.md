@@ -34,3 +34,4 @@
 - **26-06-02 — Get Discussions in Forum Meta 2** — `GET /discussion/all` response now wraps discussions in `{ category, forum, discussions: [...] }` instead of a bare array.
 - **26-06-02 — Get Forum Meta 3** — Added `GET /forum/:forumId/meta` returning `{ id, name, category, nbPages }`; reverted `GET /discussion/all` to a bare array; deleted `GET /discussion/pages` endpoint.
 - **26-06-02 — Get Forum Meta — Description Fields** — `GET /forum/:forumId/meta` now also returns `description` and `metaDescription` from the Forum model.
+- **26-06-04 — Get Messages: Author Role and isStarter** — `author` in `GET /message/all` now returns `role` and `isStarter` (true when the author is the discussion creator).
