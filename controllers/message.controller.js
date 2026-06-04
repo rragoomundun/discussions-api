@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import Message from '../models/Message.js';
+import Discussion from '../models/Discussion.js';
 import User from '../models/User.js';
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -26,6 +27,8 @@ const MESSAGES_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {String} author.name The author name
  * @apiSuccess (Success (200)) {String} author.image The author avatar
  * @apiSuccess (Success (200)) {String} author.signature The author signature
+ * @apiSuccess (Success (200)) {String} author.role The author role
+ * @apiSuccess (Success (200)) {Boolean} author.isStarter Whether the author started the discussion
  * @apiSuccess (Success (200)) {Object} editor The last editor of the message
  * @apiSuccess (Success (200)) {Number} editor.id The editor id
  * @apiSuccess (Success (200)) {String} editor.name The editor name
@@ -39,26 +42,31 @@ const getMessagesInDiscussion = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const offset = (page - 1) * MESSAGES_PER_PAGE;
 
-  const messages = await Message.findAll({
-    where: { discussionId },
-    attributes: ['id', 'message', 'date', 'editedDate', 'editionComment'],
-    include: [
-      {
-        model: User,
-        as: 'author',
-        attributes: ['id', 'name', 'image', 'signature']
-      },
-      {
-        model: User,
-        as: 'editor',
-        attributes: ['id', 'name'],
-        required: false
-      }
-    ],
-    order: [['date', 'ASC']],
-    limit: MESSAGES_PER_PAGE,
-    offset
-  });
+  const [messages, discussion] = await Promise.all([
+    Message.findAll({
+      where: { discussionId },
+      attributes: ['id', 'message', 'date', 'editedDate', 'editionComment'],
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'image', 'signature', 'role']
+        },
+        {
+          model: User,
+          as: 'editor',
+          attributes: ['id', 'name'],
+          required: false
+        }
+      ],
+      order: [['date', 'ASC']],
+      limit: MESSAGES_PER_PAGE,
+      offset
+    }),
+    Discussion.findOne({ where: { id: discussionId }, attributes: ['userId'] })
+  ]);
+
+  const starterUserId = discussion?.userId ?? null;
 
   const result = messages.map((m) => ({
     id: m.id,
@@ -66,7 +74,14 @@ const getMessagesInDiscussion = async (req, res, next) => {
     date: m.date,
     editedDate: m.editedDate,
     editionComment: m.editionComment,
-    author: { id: m.author.id, name: m.author.name, image: m.author.image, signature: m.author.signature },
+    author: {
+      id: m.author.id,
+      name: m.author.name,
+      image: m.author.image,
+      signature: m.author.signature,
+      role: m.author.role,
+      isStarter: m.author.id === starterUserId
+    },
     editor: m.editor ? { id: m.editor.id, name: m.editor.name } : null
   }));
 
