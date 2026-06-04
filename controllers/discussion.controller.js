@@ -127,6 +127,7 @@ const updateDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Object} category The category the discussion belongs to
  * @apiSuccess (Success (200)) {Number} category.id The category id
  * @apiSuccess (Success (200)) {String} category.name The category name
+ * @apiSuccess (Success (200)) {Date} createdAt The discussion creation date
  * @apiSuccess (Success (200)) {Number} nbPages The total number of message pages (20 messages per page)
  * @apiSuccess (Success (200)) {Object} author The discussion author
  * @apiSuccess (Success (200)) {Number} author.id The author id
@@ -138,6 +139,7 @@ const updateDiscussion = async (req, res, next) => {
  *   "id": 1,
  *   "title": "My first discussion",
  *   "open": true,
+ *   "createdAt": "2026-05-30T10:00:00.000Z",
  *   "forum": { "id": 2, "name": "General" },
  *   "category": { "id": 1, "name": "Main" },
  *   "author": { "id": 42, "name": "John", "image": "/uploads/avatar.jpg" },
@@ -154,7 +156,7 @@ const getDiscussion = async (req, res, next) => {
   const [discussion, messageCount] = await Promise.all([
     Discussion.findOne({
       where: { id: discussionId },
-      attributes: ['id', 'title', 'open'],
+      attributes: ['id', 'title', 'open', 'createdAt'],
       include: [
         {
           model: Forum,
@@ -188,6 +190,7 @@ const getDiscussion = async (req, res, next) => {
     id: discussion.id,
     title: discussion.title,
     open: discussion.open,
+    createdAt: discussion.createdAt,
     forum: { id: discussion.forum.id, name: discussion.forum.name },
     category: { id: discussion.forum.category.id, name: discussion.forum.category.name },
     author: { id: discussion.user.id, name: discussion.user.name, image: discussion.user.image },
