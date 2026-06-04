@@ -128,6 +128,10 @@ const updateDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Number} category.id The category id
  * @apiSuccess (Success (200)) {String} category.name The category name
  * @apiSuccess (Success (200)) {Number} nbPages The total number of message pages (20 messages per page)
+ * @apiSuccess (Success (200)) {Object} author The discussion author
+ * @apiSuccess (Success (200)) {Number} author.id The author id
+ * @apiSuccess (Success (200)) {String} author.name The author name
+ * @apiSuccess (Success (200)) {String} author.image The author avatar
  *
  * @apiSuccessExample Success Example
  * {
@@ -136,6 +140,7 @@ const updateDiscussion = async (req, res, next) => {
  *   "open": true,
  *   "forum": { "id": 2, "name": "General" },
  *   "category": { "id": 1, "name": "Main" },
+ *   "author": { "id": 42, "name": "John", "image": "/uploads/avatar.jpg" },
  *   "nbPages": 3
  * }
  *
@@ -162,6 +167,11 @@ const getDiscussion = async (req, res, next) => {
               attributes: ['id', 'name']
             }
           ]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'image']
         }
       ]
     }),
@@ -180,6 +190,7 @@ const getDiscussion = async (req, res, next) => {
     open: discussion.open,
     forum: { id: discussion.forum.id, name: discussion.forum.name },
     category: { id: discussion.forum.category.id, name: discussion.forum.category.name },
+    author: { id: discussion.user.id, name: discussion.user.name, image: discussion.user.image },
     nbPages
   });
 };
