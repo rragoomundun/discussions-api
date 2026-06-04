@@ -37,3 +37,4 @@
 - **26-06-04 — Get Messages: Author Role and isStarter** — `author` in `GET /message/all` now returns `role` and `isStarter` (true when the author is the discussion creator).
 - **26-06-04 — Get Discussion — Add Author Field** — `GET /discussion/:discussionId` now returns `author: { id, name, image }`.
 - **26-06-04 — Get Discussion — Add createdAt Field** — `GET /discussion/:discussionId` now returns `createdAt`.
+- **26-06-04 — Post Message — Align Response Structure** — `POST /message` now returns `id`, `message`, `date`, `editedDate`, `editionComment`, `author { id, name, image, signature, role, isStarter }`, `editor`.
