@@ -282,4 +282,42 @@ const deleteMessage = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { getMessagesInDiscussion, postMessage, updateMessage, deleteMessage };
+/**
+ * @api {GET} /message/:messageId/is-first Is First Message
+ * @apiGroup Message
+ * @apiName MessageIsFirstMessage
+ *
+ * @apiDescription Returns whether a message is the first one posted in its discussion.
+ *
+ * @apiParam {Number} messageId The message id.
+ *
+ * @apiSuccess (Success (200)) {Boolean} isFirst Whether the message is the first in the discussion
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "isFirst": true
+ * }
+ *
+ * @apiError (Error (404)) NOT_FOUND The message does not exist
+ *
+ * @apiPermission Public
+ */
+const isFirstMessage = async (req, res, next) => {
+  const { messageId } = req.params;
+
+  const msg = await Message.findOne({ where: { id: messageId }, attributes: ['id', 'discussionId', 'date'] });
+
+  if (!msg) {
+    return next(new ErrorResponse('Message not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  const firstMessage = await Message.findOne({
+    where: { discussionId: msg.discussionId },
+    attributes: ['id'],
+    order: [['date', 'ASC']]
+  });
+
+  res.status(httpStatus.OK).json({ isFirst: firstMessage.id === msg.id });
+};
+
+export { getMessagesInDiscussion, postMessage, updateMessage, deleteMessage, isFirstMessage };

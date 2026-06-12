@@ -42,6 +42,7 @@
     "DiscussionDeleteDiscussion",
     "DiscussionSetDiscussionOpen",
     "Message",
+    "MessageIsFirstMessage",
     "MessageGetMessagesInDiscussion",
     "MessagePostMessage",
     "MessageUpdateMessage",
