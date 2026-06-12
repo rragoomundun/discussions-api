@@ -38,3 +38,4 @@
 - **26-06-04 — Get Discussion — Add Author Field** — `GET /discussion/:discussionId` now returns `author: { id, name, image }`.
 - **26-06-04 — Get Discussion — Add createdAt Field** — `GET /discussion/:discussionId` now returns `createdAt`.
 - **26-06-04 — Post Message — Align Response Structure** — `POST /message` now returns `id`, `message`, `date`, `editedDate`, `editionComment`, `author { id, name, image, signature, role, isStarter }`, `editor`.
+- **26-06-12 — Is First Message** — Added `GET /message/:messageId/is-first` endpoint returning `{ isFirst }` (true if the message is the earliest in its discussion).
