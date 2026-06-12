@@ -8,6 +8,62 @@ import ErrorResponse from '../classes/ErrorResponse.js';
 const MESSAGES_PER_PAGE = 20;
 
 /**
+ * @api {GET} /message/:messageId Get Message
+ * @apiGroup Message
+ * @apiName MessageGetMessage
+ *
+ * @apiDescription Get a single message
+ *
+ * @apiParam {Number} messageId The message Id
+ *
+ * @apiSuccess {Number} id The message id
+ * @apiSuccess {String} message The message
+ * @apiSuccess {Date} date The message date
+ * @apiSuccess {Date} editedDate The edited date
+ * @apiSuccess {Text} editionComment The edition comment
+ * @apiSuccess (Success (200)) {Object} author The message author
+ * @apiSuccess (Success (200)) {Number} author.id The author id
+ * @apiSuccess (Success (200)) {String} author.name The author name
+ * @apiSuccess (Success (200)) {String} author.image The author avatar
+ * @apiSuccess (Success (200)) {String} author.signature The author signature
+ * @apiSuccess (Success (200)) {String} author.role The author role
+ * @apiSuccess (Success (200)) {Boolean} author.isStarter Whether the author started the discussion
+ * @apiSuccess (Success (200)) {Object} editor The last editor of the message
+ * @apiSuccess (Success (200)) {Number} editor.id The editor id
+ * @apiSuccess (Success (200)) {String} editor.name The editor name
+ *
+ * @apiError (Error (404)) NOT_FOUND The message cannot be found
+ *
+ * @apiPermission Public
+ */
+const getMessage = async (req, res, next) => {
+  const messageId = Number(req.params.messageId);
+  const message = await Message.findOne({
+    where: { id: messageId },
+    attributes: ['id', 'message', 'date', 'editedDate', 'editionComment'],
+    include: [
+      {
+        model: User,
+        as: 'author',
+        attributes: ['id', 'name', 'image', 'signature', 'role']
+      },
+      {
+        model: User,
+        as: 'editor',
+        attributes: ['id', 'name'],
+        required: false
+      }
+    ]
+  });
+
+  if (!message) {
+    return next(new ErrorResponse('Message not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  res.status(httpStatus.OK).json(message);
+};
+
+/**
  * @api {GET} /message/all Get Messages in Discussion
  * @apiGroup Message
  * @apiName MessageGetMessagesInDiscussion
@@ -320,4 +376,4 @@ const isFirstMessage = async (req, res, next) => {
   res.status(httpStatus.OK).json({ isFirst: firstMessage.id === msg.id });
 };
 
-export { getMessagesInDiscussion, postMessage, updateMessage, deleteMessage, isFirstMessage };
+export { getMessagesInDiscussion, postMessage, updateMessage, deleteMessage, isFirstMessage, getMessage };

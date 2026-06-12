@@ -43,6 +43,7 @@
     "DiscussionSetDiscussionOpen",
     "Message",
     "MessageIsFirstMessage",
+    "MessageGetMessage",
     "MessageGetMessagesInDiscussion",
     "MessagePostMessage",
     "MessageUpdateMessage",
