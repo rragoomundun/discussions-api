@@ -37,6 +37,7 @@ const getFirstMessage = async (req, res, next) => {
   const message = await Message.findOne({
     where: { discussionId },
     attributes: ['id', 'message', 'date', 'editedDate', 'editionComment'],
+    order: [['date', 'ASC']],
     include: [
       {
         model: User,
