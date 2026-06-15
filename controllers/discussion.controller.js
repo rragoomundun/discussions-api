@@ -133,6 +133,7 @@ const updateDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Number} author.id The author id
  * @apiSuccess (Success (200)) {String} author.name The author name
  * @apiSuccess (Success (200)) {String} author.image The author avatar
+ * @apiSuccess (Success (200)) {String} author.role The author role
  *
  * @apiSuccessExample Success Example
  * {
@@ -142,7 +143,7 @@ const updateDiscussion = async (req, res, next) => {
  *   "createdAt": "2026-05-30T10:00:00.000Z",
  *   "forum": { "id": 2, "name": "General" },
  *   "category": { "id": 1, "name": "Main" },
- *   "author": { "id": 42, "name": "John", "image": "/uploads/avatar.jpg" },
+ *   "author": { "id": 42, "name": "John", "image": "/uploads/avatar.jpg", "role": "regular" },
  *   "nbPages": 3
  * }
  *
@@ -173,7 +174,7 @@ const getDiscussion = async (req, res, next) => {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'image']
+          attributes: ['id', 'name', 'image', 'role']
         }
       ]
     }),
@@ -193,7 +194,12 @@ const getDiscussion = async (req, res, next) => {
     createdAt: discussion.createdAt,
     forum: { id: discussion.forum.id, name: discussion.forum.name },
     category: { id: discussion.forum.category.id, name: discussion.forum.category.name },
-    author: { id: discussion.user.id, name: discussion.user.name, image: discussion.user.image },
+    author: {
+      id: discussion.user.id,
+      name: discussion.user.name,
+      image: discussion.user.image,
+      role: discussion.user.role
+    },
     nbPages
   });
 };
@@ -251,6 +257,7 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Object} .user The discussion author
  * @apiSuccess (Success (200)) {Number} .user.id The author id
  * @apiSuccess (Success (200)) {String} .user.name The author name
+ * @apiSuccess (Success (200)) {String} .user.role The author role
  * @apiSuccess (Success (200)) {Number} .nbMessages The number of messages in the discussion
  * @apiSuccess (Success (200)) {Object} .lastMessage The last message in the discussion
  * @apiSuccess (Success (200)) {Number} .lastMessage.messageId The last message id
@@ -271,7 +278,7 @@ const getDiscussionsInForum = async (req, res, next) => {
   const discussions = await Discussion.findAll({
     where: { forumId },
     attributes: ['id', 'title', 'open', 'createdAt'],
-    include: [{ model: User, as: 'user', attributes: ['id', 'name'] }],
+    include: [{ model: User, as: 'user', attributes: ['id', 'name', 'role'] }],
     order: [
       [
         Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
@@ -323,7 +330,7 @@ const getDiscussionsInForum = async (req, res, next) => {
     title: d.title,
     open: d.open,
     createdAt: d.createdAt,
-    user: { id: d.user.id, name: d.user.name },
+    user: { id: d.user.id, name: d.user.name, role: d.user.role },
     nbMessages: messageCountMap[d.id] ?? 0,
     lastMessage: lastMessageMap[d.id] || null
   }));
