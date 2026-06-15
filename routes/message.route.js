@@ -1,7 +1,7 @@
 import express from 'express';
 
 import {
-  isFirstMessage,
+  getFirstMessage,
   getMessage,
   getMessagesInDiscussion,
   postMessage,
@@ -9,6 +9,7 @@ import {
   deleteMessage
 } from '../controllers/message.controller.js';
 import {
+  getFirstMessageValidator,
   getMessagesInDiscussionValidator,
   postMessageValidator,
   updateMessageValidator
@@ -20,8 +21,8 @@ const router = express.Router();
 
 router
   .get('/all', getMessagesInDiscussionValidator, getMessagesInDiscussion)
+  .get('/first', getFirstMessageValidator, getFirstMessage)
   .get('/:messageId', getMessage)
-  .get('/:messageId/is-first', isFirstMessage)
   .post('/', authorizeMiddleware, postMessageValidator, postMessage)
   .put('/:messageId', authorizeMiddleware, updateMessageValidator, updateMessage)
   .delete('/:messageId', authorizeMiddleware, deleteMessage);
