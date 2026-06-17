@@ -335,13 +335,15 @@ const updateMessage = async (req, res, next) => {
   msg.editedDate = new Date();
   msg.editionComment = editionComment ?? null;
 
-  if (!isOwner) {
+  if (isOwner) {
+    msg.editorId = null;
+  } else {
     msg.editorId = userId;
   }
 
   await msg.save();
 
-  const editor = !isOwner ? { id: userId, name: req.user.name } : null;
+  const editor = isOwner ? null : { id: userId, name: req.user.name };
 
   res.status(httpStatus.OK).json({
     id: msg.id,
