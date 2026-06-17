@@ -89,7 +89,15 @@ const updateDiscussion = async (req, res, next) => {
   const { discussionId } = req.params;
   const { title } = req.body;
 
-  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+  const discussion = await Discussion.findOne({
+    where: { id: discussionId },
+    include: [
+      {
+        model: User,
+        as: 'user'
+      }
+    ]
+  });
 
   if (!discussion) {
     return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
@@ -97,7 +105,11 @@ const updateDiscussion = async (req, res, next) => {
 
   const { role, id: userId } = req.user;
 
-  if (role === 'regular' && discussion.userId !== userId) {
+  if (
+    (role === 'regular' && discussion.userId !== userId) ||
+    (discussion.user.role === 'moderator' && role === 'moderator' && discussion.userId !== userId) ||
+    (discussion.user.role === 'admin' && role !== 'admin')
+  ) {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 

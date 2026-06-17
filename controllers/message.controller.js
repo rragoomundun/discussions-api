@@ -313,7 +313,11 @@ const updateMessage = async (req, res, next) => {
     return next(new ErrorResponse('Message not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
   }
 
-  if (role === 'regular' && msg.authorId !== userId) {
+  if (
+    (role === 'regular' && msg.authorId !== userId) ||
+    (msg.author.role === 'moderator' && role === 'moderator' && msg.authorId !== userId) ||
+    (msg.author.role === 'admin' && role !== 'admin')
+  ) {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
