@@ -351,7 +351,7 @@ const getDiscussionsInForum = async (req, res, next) => {
 };
 
 /**
- * @api {PUT} /discussion/:discussionId/open Set Discussion Open
+ * @api {PUT} /discussion/:discussionId/open Set Discussion Open Status
  * @apiGroup Discussion
  * @apiName DiscussionSetDiscussionOpen
  *
@@ -382,10 +382,22 @@ const setDiscussionOpen = async (req, res, next) => {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
-  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+  const discussion = await Discussion.findOne({
+    where: { id: discussionId },
+    include: [
+      {
+        model: User,
+        as: 'user'
+      }
+    ]
+  });
 
   if (!discussion) {
     return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (role === 'moderator' && discussion.user.role === 'moderator' && req.user.id !== discussion.user.id) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
   discussion.open = open;
