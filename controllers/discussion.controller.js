@@ -235,14 +235,28 @@ const deleteDiscussion = async (req, res, next) => {
   const { discussionId } = req.params;
   const { role } = req.user;
 
-  if (role === 'regular') {
-    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
-  }
-
-  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+  const discussion = await Discussion.findOne({
+    where: {
+      id: discussionId
+    },
+    include: [
+      {
+        model: User,
+        as: 'user'
+      }
+    ]
+  });
 
   if (!discussion) {
     return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (
+    role === 'regular' ||
+    (discussion.user.role === 'moderator' && role === 'moderator' && discussion.userId !== req.user.id) ||
+    (discussion.user.role === 'admin' && role !== 'admin')
+  ) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
   await discussion.destroy();
