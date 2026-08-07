@@ -35,6 +35,19 @@ JWT_EXPIRE=180d
 JWT_COOKIE_EXPIRE=180
 
 
+# AWS API Access Key
+APP_ACCESS_KEY_ID=
+
+# AWS API Secret Access Key
+APP_SECRET_ACCESS_KEY=
+
+# AWS S3 Upload Bucket Region
+AWS_S3_REGION=
+
+# AWS S3 uploaded files bucket name
+AWS_S3_FILES_BUCKET_NAME=
+
+
 # SMTP user name
 SMTP_USER=username
 
