@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/rragoomundun/discussions-api#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1105.0",
     "apidoc": "^1.2.0",
     "bcrypt": "^6.0.0",
     "colors": "^1.4.0",
