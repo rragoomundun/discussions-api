@@ -68,7 +68,7 @@ const uploadFile = async (req, res, next) => {
  *
  * @apiPermission Private
  */
-const deleteFile = async (req, res) => {
+const deleteFile = async (req, res, next) => {
   const { fileName } = req.body;
   const { user } = req;
 
@@ -80,8 +80,10 @@ const deleteFile = async (req, res) => {
 
   const params = {
     Bucket: process.env.AWS_S3_FILES_BUCKET_NAME,
-    Key: fileName
+    Key: fileName.split(process.env.AWS_S3_FILES_BUCKET_NAME)[1]
   };
+
+  params.Key = params.Key.substring(1);
 
   try {
     await s3.send(new DeleteObjectCommand(params));
