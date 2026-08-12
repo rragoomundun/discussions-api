@@ -25,20 +25,8 @@ RATE_LIMIT=100
 APP_URL=http://localhost:4200
 
 
-# The database user
-DB_USER=user
-
-# The database host
-DB_HOST=localhost
-
-# The database name
-DB_DATABASE=db
-
-# The database password
-DB_PASSWORD=123456
-
-# The database port
-DB_PORT=5432
+# The database url
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require&channel_binding=require
 
 
 # JWT Token secret code

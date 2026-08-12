@@ -3,8 +3,8 @@
   "version": "0.5.0",
   "description": "Documentation for Discussions API",
   "title": "Discussions API",
-  "url": "http://localhost:5000",
-  "sampleUrl": "http://localhost:5000",
+  "url": "https://discussions-api.r3tests.net",
+  "sampleUrl": "https://discussions-api.r3tests.net",
   "order": [
     "API",
     "Config",
