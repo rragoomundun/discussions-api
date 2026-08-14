@@ -67,7 +67,7 @@ app.use('/discussion', discussionRoutes);
 app.use('/message', messageRoutes);
 
 // Limit the number of requests per minute in prod mode
-if (process.env.ENV === 'prod') {
+if (process.env.ENV === 'production') {
   app.use(
     rateLimit({
       windowMs: 60 * 1000, // 1 minute
