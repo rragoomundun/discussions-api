@@ -20,7 +20,7 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiSuccess (Success (200)) {Boolean} admin Whether the admin exists
  * @apiSuccessExample Success Example
  * {
- *   "exists": true,
+ *   "config": true,
  *   "admin": "false"
  * }
  *

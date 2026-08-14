@@ -1,5 +1,8 @@
 import { Sequelize } from 'sequelize';
 import colors from 'colors';
+import net from 'net';
+
+net.setDefaultAutoSelectFamily(false);
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
@@ -10,9 +13,10 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   },
   logging: false
 });
+
 try {
   await sequelize.authenticate();
-  console.log(`[OK] Connected to database ${process.env.DB_DATABASE} on port ${process.env.DB_PORT}`.green);
+  console.log(`[OK] Connected to database`.green);
 } catch (error) {
   console.log('[FAILED] Connection to database failed'.red);
   console.log(error.message);

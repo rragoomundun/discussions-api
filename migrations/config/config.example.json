@@ -5,6 +5,12 @@
     "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "migrationStorageTableName": "migrations"
   },
   "test": {
@@ -13,6 +19,12 @@
     "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "migrationStorageTableName": "migrations"
   },
   "production": {
@@ -21,6 +33,12 @@
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "migrationStorageTableName": "migrations"
   }
 }

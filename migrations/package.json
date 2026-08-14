@@ -5,8 +5,10 @@
   "main": "",
   "scripts": {
     "migration:create": "npx sequelize-cli migration:create",
-    "migration:migrate": "npx sequelize-cli db:migrate",
-    "migration:rollback": "npx sequelize-cli db:migrate:undo"
+    "migration:migrate": "NODE_OPTIONS=--no-network-family-autoselection npx sequelize-cli db:migrate",
+    "migration:migrate:production": "NODE_OPTIONS=--no-network-family-autoselection npx sequelize-cli db:migrate --env production",
+    "migration:rollback": "NODE_OPTIONS=--no-network-family-autoselection npx sequelize-cli db:migrate:undo",
+    "migration:rollback:production": "NODE_OPTIONS=--no-network-family-autoselection npx sequelize-cli db:migrate:undo --env production"
   },
   "author": "Raphael Ragoomundun",
   "license": "MIT",

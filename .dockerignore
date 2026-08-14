@@ -1,0 +1,4 @@
+node_modules
+migrations/node_modules
+.git
+.env
