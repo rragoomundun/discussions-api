@@ -7,7 +7,6 @@
   "scripts": {
     "start": "node --env-file=.env server.js",
     "start:watch": "node --watch --env-file=.env server.js",
-    "start:noenv": "node server.js",
     "gendoc": "node ./node_modules/apidoc/bin/apidoc -i ./controllers/ -o ./public"
   },
   "repository": {
