@@ -4,13 +4,11 @@ import net from 'net';
 
 net.setDefaultAutoSelectFamily(false);
 
+const isLocal = process.env.DATABASE_URL.includes('localhost');
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true
-    }
-  },
+  dialectOptions: isLocal ? {} : { ssl: { require: true } },
   logging: false
 });
 
