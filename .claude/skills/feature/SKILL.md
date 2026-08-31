@@ -10,17 +10,16 @@ Manages the full lifecycle of a feature from spec to merge.
 
 ## Working File
 
-@context/current-feature.md
+@context/current-task.md
 
 ### File Structure
 
-current-feature.md has these sections:
+current-task.md has these sections:
 
-- `# Current Feature` - H1 heading with feature name when active
+- `# Current Task` - H1 heading with feature name when active
 - `## Status` - Not Started | In Progress | Complete
 - `## Goals` - Bullet points of what success looks like
 - `## Notes` - Additional context, constraints, or details from spec
-- `## History` - Completed features (append only)
 
 ## Task
 

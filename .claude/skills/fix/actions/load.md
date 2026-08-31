@@ -5,10 +5,10 @@
    - If it's multiple words: Use as inline feature description, generate goals
    - If empty: Error - "load" requires a spec filename or feature description
 
-2. Update current-hotfix.md:
-   - Update H1 heading to include feature name (e.g., `# Current Hotfix: Remove description`)
+2. Update current-feature.md:
+   - Update H1 heading to include feature name (e.g., `# Current Feature: Add Navbar`)
    - Write goals as bullet points under ## Goals
    - Write any additional notes/context under ## Notes
    - Set Status to "Not Started"
 
-3. Confirm spec loaded and show the hotfix summary
+3. Confirm spec loaded and show the feature summary

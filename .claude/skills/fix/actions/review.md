@@ -1,7 +1,7 @@
 # Review Action
 
-1. Read current-hotfix.md to understand the goals
-2. Review all code changes made for this feature
+1. Read current-task.md to understand the goals
+2. Review all code changes made for this fix
 3. Check for:
    - ✅ Goals met
    - ❌ Goals missing or incomplete
