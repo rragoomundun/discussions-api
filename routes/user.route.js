@@ -2,6 +2,7 @@ import express from 'express';
 
 import {
   getUser,
+  getUserProfile,
   updateEmail,
   updatePassword,
   updatePersonalInformation,
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router
   .get('/', authorizeMiddleware, getUser)
+  .get('/:id', getUserProfile)
   .put('/email', authorizeMiddleware, emailValidator, updateEmail)
   .put('/password', authorizeMiddleware, passwordValidator, updatePassword)
   .put('/profile-picture', authorizeMiddleware, profilePictureValidator, updateProfilePicture)
