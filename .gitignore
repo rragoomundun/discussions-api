@@ -1,5 +1,6 @@
 .env
 node_modules/*
+.DS_Store
 
 migrations/config/config.json
 migrations/node_modules/*

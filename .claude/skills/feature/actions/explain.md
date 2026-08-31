@@ -1,6 +1,6 @@
 # Explain Action
 
-1. Read current-feature.md to understand what was implemented
+1. Read current-task.md to understand what was implemented
 2. Run `git diff main --name-only` to get list of files changed
 3. For each file created or modified:
    - Show the file path

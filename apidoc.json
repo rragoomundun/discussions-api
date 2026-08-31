@@ -23,6 +23,7 @@
     "AuthAuthorized",
     "User",
     "UserGetUser",
+    "UserGetUserProfile",
     "UserUpdateEmail",
     "UserUpdatePassword",
     "UserUpdateProfilePicture",
