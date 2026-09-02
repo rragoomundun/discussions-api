@@ -1,8 +1,11 @@
 import httpStatus from 'http-status-codes';
+import { QueryTypes } from 'sequelize';
 
 import User from '../models/User.js';
 import Discussion from '../models/Discussion.js';
 import Message from '../models/Message.js';
+
+import sequelize from '../utils/db.util.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -170,6 +173,99 @@ const getUserInformation = async (req, res, next) => {
   });
 };
 
+const USER_DISCUSSIONS_PER_PAGE = 20;
+
+/**
+ * @api {GET} /user/:id/discussions Get User Discussions
+ * @apiGroup User
+ * @apiName UserGetUserDiscussions
+ *
+ * @apiDescription Get paginated discussions started by a user, ordered by most recent first.
+ *
+ * @apiParam {Number} id The user id.
+ * @apiQuery {Number} [page=1] The page number.
+ *
+ * @apiSuccess (Success (200)) {Number} .id The discussion id
+ * @apiSuccess (Success (200)) {String} .title The discussion title
+ * @apiSuccess (Success (200)) {Boolean} .open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Date} .createdAt The creation date
+ * @apiSuccess (Success (200)) {Object} .user The discussion author
+ * @apiSuccess (Success (200)) {Number} .user.id The author id
+ * @apiSuccess (Success (200)) {String} .user.name The author name
+ * @apiSuccess (Success (200)) {String} .user.role The author role
+ * @apiSuccess (Success (200)) {Number} .nbMessages The number of messages in the discussion
+ * @apiSuccess (Success (200)) {Object} .lastMessage The last message in the discussion
+ * @apiSuccess (Success (200)) {Number} .lastMessage.messageId The last message id
+ * @apiSuccess (Success (200)) {Date} .lastMessage.date The last message date
+ * @apiSuccess (Success (200)) {Object} .lastMessage.user The last message author
+ * @apiSuccess (Success (200)) {Number} .lastMessage.user.id The last message author id
+ * @apiSuccess (Success (200)) {String} .lastMessage.user.name The last message author name
+ *
+ * @apiPermission Public
+ */
+const getUserDiscussions = async (req, res, next) => {
+  const { id } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * USER_DISCUSSIONS_PER_PAGE;
+
+  const discussions = await Discussion.findAll({
+    where: { userId: id },
+    attributes: ['id', 'title', 'open', 'createdAt'],
+    include: [{ model: User, as: 'user', attributes: ['id', 'name', 'role'] }],
+    order: [['createdAt', 'DESC']],
+    limit: USER_DISCUSSIONS_PER_PAGE,
+    offset
+  });
+
+  if (discussions.length === 0) {
+    return res.status(httpStatus.OK).json([]);
+  }
+
+  const discussionIds = discussions.map((d) => d.id);
+
+  const [lastMessages, messageCounts] = await Promise.all([
+    sequelize.query(
+      `SELECT DISTINCT ON ("discussionId")
+        m.id, m.date, m."discussionId", u.id AS "userId", u.name AS "userName"
+       FROM "Message" m
+       JOIN "User" u ON u.id = m."authorId"
+       WHERE m."discussionId" IN (:discussionIds)
+       ORDER BY "discussionId", m.date DESC`,
+      { replacements: { discussionIds }, type: QueryTypes.SELECT }
+    ),
+    Message.findAll({
+      attributes: ['discussionId', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+      where: { discussionId: discussionIds },
+      group: ['discussionId'],
+      raw: true
+    })
+  ]);
+
+  const lastMessageMap = {};
+
+  for (const msg of lastMessages) {
+    lastMessageMap[msg.discussionId] = {
+      messageId: msg.id,
+      date: msg.date,
+      user: { id: msg.userId, name: msg.userName }
+    };
+  }
+
+  const messageCountMap = Object.fromEntries(messageCounts.map((r) => [r.discussionId, parseInt(r.count)]));
+
+  const result = discussions.map((d) => ({
+    id: d.id,
+    title: d.title,
+    open: d.open,
+    createdAt: d.createdAt,
+    user: { id: d.user.id, name: d.user.name, role: d.user.role },
+    nbMessages: messageCountMap[d.id] ?? 0,
+    lastMessage: lastMessageMap[d.id] || null
+  }));
+
+  res.status(httpStatus.OK).json(result);
+};
+
 /**
  * @api {PUT} /user/email Update Email
  * @apiGroup User
@@ -323,6 +419,7 @@ export {
   getUser,
   getUserProfile,
   getUserInformation,
+  getUserDiscussions,
   updateEmail,
   updatePassword,
   updateProfilePicture,
