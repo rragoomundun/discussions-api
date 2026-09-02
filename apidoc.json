@@ -26,6 +26,7 @@
     "UserGetUserProfile",
     "UserGetUserInformation",
     "UserGetUserDiscussions",
+    "UserGetUserMessages",
     "UserUpdateEmail",
     "UserUpdatePassword",
     "UserUpdateProfilePicture",

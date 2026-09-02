@@ -4,6 +4,7 @@ import { QueryTypes } from 'sequelize';
 import User from '../models/User.js';
 import Discussion from '../models/Discussion.js';
 import Message from '../models/Message.js';
+import Forum from '../models/Forum.js';
 
 import sequelize from '../utils/db.util.js';
 
@@ -266,6 +267,94 @@ const getUserDiscussions = async (req, res, next) => {
   res.status(httpStatus.OK).json(result);
 };
 
+const USER_MESSAGES_PER_PAGE = 20;
+
+/**
+ * @api {GET} /user/:id/messages Get User Messages
+ * @apiGroup User
+ * @apiName UserGetUserMessages
+ *
+ * @apiDescription Get paginated messages posted by a user, ordered by most recent first.
+ *
+ * @apiParam {Number} id The user id.
+ * @apiQuery {Number} [page=1] The page number.
+ *
+ * @apiSuccess (Success (200)) {Object} .discussion The discussion the message belongs to
+ * @apiSuccess (Success (200)) {Number} .discussion.id The discussion id
+ * @apiSuccess (Success (200)) {String} .discussion.title The discussion title
+ * @apiSuccess (Success (200)) {Number} .discussion.page The page (20 messages per page) where the message is posted in the discussion
+ * @apiSuccess (Success (200)) {Object} .forum The forum the discussion belongs to
+ * @apiSuccess (Success (200)) {Number} .forum.id The forum id
+ * @apiSuccess (Success (200)) {String} .forum.name The forum name
+ * @apiSuccess (Success (200)) {Object} .message The message
+ * @apiSuccess (Success (200)) {Number} .message.id The message id
+ * @apiSuccess (Success (200)) {String} .message.message The message content
+ * @apiSuccess (Success (200)) {Date} .message.date The message date
+ *
+ * @apiPermission Public
+ */
+const getUserMessages = async (req, res, next) => {
+  const { id } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * USER_MESSAGES_PER_PAGE;
+
+  const messages = await Message.findAll({
+    where: { authorId: id },
+    attributes: ['id', 'message', 'date'],
+    include: [
+      {
+        model: Discussion,
+        as: 'discussion',
+        attributes: ['id', 'title'],
+        include: [{ model: Forum, as: 'forum', attributes: ['id', 'name'] }]
+      }
+    ],
+    order: [['date', 'DESC']],
+    limit: USER_MESSAGES_PER_PAGE,
+    offset
+  });
+
+  if (messages.length === 0) {
+    return res.status(httpStatus.OK).json([]);
+  }
+
+  const messageIds = messages.map((m) => m.id);
+  const discussionIds = [...new Set(messages.map((m) => m.discussion.id))];
+
+  const rankRows = await sequelize.query(
+    `SELECT id, row_number FROM (
+       SELECT id, ROW_NUMBER() OVER (PARTITION BY "discussionId" ORDER BY date ASC, id ASC) AS row_number
+       FROM "Message"
+       WHERE "discussionId" IN (:discussionIds)
+     ) sub
+     WHERE id IN (:messageIds)`,
+    { replacements: { discussionIds, messageIds }, type: QueryTypes.SELECT }
+  );
+
+  const pageMap = Object.fromEntries(
+    rankRows.map((r) => [r.id, Math.ceil(parseInt(r.row_number) / USER_MESSAGES_PER_PAGE)])
+  );
+
+  const result = messages.map((m) => ({
+    discussion: {
+      id: m.discussion.id,
+      title: m.discussion.title,
+      page: pageMap[m.id]
+    },
+    forum: {
+      id: m.discussion.forum.id,
+      name: m.discussion.forum.name
+    },
+    message: {
+      id: m.id,
+      message: m.message,
+      date: m.date
+    }
+  }));
+
+  res.status(httpStatus.OK).json(result);
+};
+
 /**
  * @api {PUT} /user/email Update Email
  * @apiGroup User
@@ -420,6 +509,7 @@ export {
   getUserProfile,
   getUserInformation,
   getUserDiscussions,
+  getUserMessages,
   updateEmail,
   updatePassword,
   updateProfilePicture,
