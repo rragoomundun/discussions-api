@@ -28,6 +28,7 @@
     "UserGetUserDiscussions",
     "UserGetUserDiscussionsMeta",
     "UserGetUserMessages",
+    "UserGetUserMessagesMeta",
     "UserUpdateEmail",
     "UserUpdatePassword",
     "UserUpdateProfilePicture",

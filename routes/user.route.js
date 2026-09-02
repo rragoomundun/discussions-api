@@ -7,6 +7,7 @@ import {
   getUserDiscussions,
   getUserDiscussionsMeta,
   getUserMessages,
+  getUserMessagesMeta,
   updateEmail,
   updatePassword,
   updatePersonalInformation,
@@ -27,6 +28,7 @@ router
   .get('/:id/discussions', getUserDiscussions)
   .get('/:id/discussions/meta', getUserDiscussionsMeta)
   .get('/:id/messages', getUserMessages)
+  .get('/:id/messages/meta', getUserMessagesMeta)
   .put('/email', authorizeMiddleware, emailValidator, updateEmail)
   .put('/password', authorizeMiddleware, passwordValidator, updatePassword)
   .put('/profile-picture', authorizeMiddleware, profilePictureValidator, updateProfilePicture)
