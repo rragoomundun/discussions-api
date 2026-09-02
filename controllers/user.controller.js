@@ -267,6 +267,33 @@ const getUserDiscussions = async (req, res, next) => {
   res.status(httpStatus.OK).json(result);
 };
 
+/**
+ * @api {GET} /user/:id/discussions/meta Get User Discussions Meta
+ * @apiGroup User
+ * @apiName UserGetUserDiscussionsMeta
+ *
+ * @apiDescription Get meta information for a user's discussions: number of pages.
+ *
+ * @apiParam {Number} id The user id.
+ *
+ * @apiSuccess (Success (200)) {Number} nbPages The number of discussion pages (20 per page, minimum 1)
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "nbPages": 3
+ * }
+ *
+ * @apiPermission Public
+ */
+const getUserDiscussionsMeta = async (req, res, next) => {
+  const { id } = req.params;
+
+  const nbDiscussions = await Discussion.count({ where: { userId: id } });
+  const nbPages = Math.max(1, Math.ceil(nbDiscussions / USER_DISCUSSIONS_PER_PAGE));
+
+  res.status(httpStatus.OK).json({ nbPages });
+};
+
 const USER_MESSAGES_PER_PAGE = 20;
 
 /**
@@ -509,6 +536,7 @@ export {
   getUserProfile,
   getUserInformation,
   getUserDiscussions,
+  getUserDiscussionsMeta,
   getUserMessages,
   updateEmail,
   updatePassword,
