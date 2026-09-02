@@ -4,6 +4,7 @@ import {
   getUser,
   getUserProfile,
   getUserInformation,
+  getUserDiscussions,
   updateEmail,
   updatePassword,
   updatePersonalInformation,
@@ -21,6 +22,7 @@ router
   .get('/', authorizeMiddleware, getUser)
   .get('/:id', getUserProfile)
   .get('/:id/informations', getUserInformation)
+  .get('/:id/discussions', getUserDiscussions)
   .put('/email', authorizeMiddleware, emailValidator, updateEmail)
   .put('/password', authorizeMiddleware, passwordValidator, updatePassword)
   .put('/profile-picture', authorizeMiddleware, profilePictureValidator, updateProfilePicture)
