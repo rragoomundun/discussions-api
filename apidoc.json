@@ -24,6 +24,7 @@
     "User",
     "UserGetUser",
     "UserGetUserProfile",
+    "UserGetUserInformation",
     "UserUpdateEmail",
     "UserUpdatePassword",
     "UserUpdateProfilePicture",
