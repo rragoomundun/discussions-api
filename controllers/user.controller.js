@@ -125,6 +125,52 @@ const getUserProfile = async (req, res, next) => {
 };
 
 /**
+ * @api {GET} /user/:id/informations Get User Information
+ * @apiGroup User
+ * @apiName UserGetUserInformation
+ *
+ * @apiDescription Get the extended public profile information of a specific user.
+ *
+ * @apiParam {Number} id The user id.
+ *
+ * @apiSuccess (Success (200)) {String} birthday The user birth date (YYYY-MM-DD)
+ * @apiSuccess (Success (200)) {String} location The user location
+ * @apiSuccess (Success (200)) {String} gender The user gender
+ * @apiSuccess (Success (200)) {String} biography The user biography
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "birthday": "1990-05-12",
+ *   "location": "France",
+ *   "gender": "male",
+ *   "biography": "Lorem ipsum..."
+ * }
+ *
+ * @apiError (Error (404)) NOT_FOUND The user does not exist
+ *
+ * @apiPermission Public
+ */
+const getUserInformation = async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findOne({
+    where: { id },
+    attributes: ['birthday', 'location', 'gender', 'biography']
+  });
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  res.status(httpStatus.OK).json({
+    birthday: user.birthday ? user.birthday.toISOString().split('T')[0] : null,
+    location: user.location,
+    gender: user.gender,
+    biography: user.biography
+  });
+};
+
+/**
  * @api {PUT} /user/email Update Email
  * @apiGroup User
  * @apiName UserUpdateEmail
@@ -276,6 +322,7 @@ const updateSignature = async (req, res, next) => {
 export {
   getUser,
   getUserProfile,
+  getUserInformation,
   updateEmail,
   updatePassword,
   updateProfilePicture,
