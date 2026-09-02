@@ -1,6 +1,6 @@
 {
   "name": "discussions-api",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Discussions API",
   "main": "server.js",
   "type": "module",
