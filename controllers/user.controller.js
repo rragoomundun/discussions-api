@@ -383,6 +383,33 @@ const getUserMessages = async (req, res, next) => {
 };
 
 /**
+ * @api {GET} /user/:id/messages/meta Get User Messages Meta
+ * @apiGroup User
+ * @apiName UserGetUserMessagesMeta
+ *
+ * @apiDescription Get meta information for a user's messages: number of pages.
+ *
+ * @apiParam {Number} id The user id.
+ *
+ * @apiSuccess (Success (200)) {Number} nbPages The number of message pages (20 per page, minimum 1)
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "nbPages": 3
+ * }
+ *
+ * @apiPermission Public
+ */
+const getUserMessagesMeta = async (req, res, next) => {
+  const { id } = req.params;
+
+  const nbMessages = await Message.count({ where: { authorId: id } });
+  const nbPages = Math.max(1, Math.ceil(nbMessages / USER_MESSAGES_PER_PAGE));
+
+  res.status(httpStatus.OK).json({ nbPages });
+};
+
+/**
  * @api {PUT} /user/email Update Email
  * @apiGroup User
  * @apiName UserUpdateEmail
@@ -538,6 +565,7 @@ export {
   getUserDiscussions,
   getUserDiscussionsMeta,
   getUserMessages,
+  getUserMessagesMeta,
   updateEmail,
   updatePassword,
   updateProfilePicture,
