@@ -1,15 +1,15 @@
-# Current Task: User Profile Image
+# Current Task
+
+<!-- Fix name and short description -->
 
 ## Status
 
-Implemented (pending review)
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- `GET /user/:id` (`getUserProfile` in [controllers/user.controller.js](controllers/user.controller.js)) should also return the `image` field
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Spec source: `context/fixes/1-user-profile-image-spec.md`
-- Currently `getUserProfile` only selects/returns `name`, `role`, `nbDiscussions`, `nbMessages`, `createdAt` — needs `image` added to both the `attributes` list and the JSON response.
-- Update the apidoc block for `UserGetUserProfile` to document the new field and regenerate docs.
+<!-- Any extra notes -->
