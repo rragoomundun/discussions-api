@@ -86,6 +86,7 @@ const getUser = async (req, res, next) => {
  *
  * @apiSuccess (Success (200)) {String} name The user name
  * @apiSuccess (Success (200)) {String} role The user role (admin, moderator, or regular)
+ * @apiSuccess (Success (200)) {String} image The user profile picture
  * @apiSuccess (Success (200)) {Number} nbDiscussions The number of discussions started by the user
  * @apiSuccess (Success (200)) {Number} nbMessages The number of messages posted by the user
  * @apiSuccess (Success (200)) {Date} createdAt The created date of the account
@@ -94,6 +95,7 @@ const getUser = async (req, res, next) => {
  * {
  *   "name": "Tom Appolo",
  *   "role": "regular",
+ *   "image": null,
  *   "nbDiscussions": 4,
  *   "nbMessages": 27,
  *   "createdAt": "2025-12-30T11:11:11.000Z"
@@ -109,7 +111,7 @@ const getUserProfile = async (req, res, next) => {
   const [user, nbDiscussions, nbMessages] = await Promise.all([
     User.findOne({
       where: { id },
-      attributes: ['name', 'role', 'createdAt']
+      attributes: ['name', 'role', 'image', 'createdAt']
     }),
     Discussion.count({ where: { userId: id } }),
     Message.count({ where: { authorId: id } })
@@ -122,6 +124,7 @@ const getUserProfile = async (req, res, next) => {
   res.status(httpStatus.OK).json({
     name: user.name,
     role: user.role,
+    image: user.image,
     nbDiscussions,
     nbMessages,
     createdAt: user.createdAt
