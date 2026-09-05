@@ -340,11 +340,11 @@ const sendTokenResponse = async (userId, statusCode, res) => {
   const token = user.getSignedJWTToken(userId);
 
   const options = {
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * process.env.JWT_COOKIE_EXPIRE),
-    sameSite: 'None'
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * process.env.JWT_COOKIE_EXPIRE)
   };
 
   if (process.env.SECURE) {
+    options.sameSite = 'None';
     options.secure = true;
   }
 
