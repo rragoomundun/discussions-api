@@ -284,6 +284,12 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Number} .user.id The author id
  * @apiSuccess (Success (200)) {String} .user.name The author name
  * @apiSuccess (Success (200)) {String} .user.role The author role
+ * @apiSuccess (Success (200)) {Object} .forum The forum the discussion belongs to
+ * @apiSuccess (Success (200)) {Number} .forum.id The forum id
+ * @apiSuccess (Success (200)) {String} .forum.name The forum name
+ * @apiSuccess (Success (200)) {Object} .category The category the forum belongs to
+ * @apiSuccess (Success (200)) {Number} .category.id The category id
+ * @apiSuccess (Success (200)) {String} .category.name The category name
  * @apiSuccess (Success (200)) {Number} .nbMessages The number of messages in the discussion
  * @apiSuccess (Success (200)) {Object} .lastMessage The last message in the discussion
  * @apiSuccess (Success (200)) {Number} .lastMessage.messageId The last message id
@@ -304,7 +310,15 @@ const getDiscussionsInForum = async (req, res, next) => {
   const discussions = await Discussion.findAll({
     where: { forumId },
     attributes: ['id', 'title', 'open', 'createdAt'],
-    include: [{ model: User, as: 'user', attributes: ['id', 'name', 'role'] }],
+    include: [
+      { model: User, as: 'user', attributes: ['id', 'name', 'role'] },
+      {
+        model: Forum,
+        as: 'forum',
+        attributes: ['id', 'name'],
+        include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }]
+      }
+    ],
     order: [
       [
         Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
@@ -357,6 +371,8 @@ const getDiscussionsInForum = async (req, res, next) => {
     open: d.open,
     createdAt: d.createdAt,
     user: { id: d.user.id, name: d.user.name, role: d.user.role },
+    forum: { id: d.forum.id, name: d.forum.name },
+    category: { id: d.forum.category.id, name: d.forum.category.name },
     nbMessages: messageCountMap[d.id] ?? 0,
     lastMessage: lastMessageMap[d.id] || null
   }));
