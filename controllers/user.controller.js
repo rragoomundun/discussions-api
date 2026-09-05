@@ -333,6 +333,9 @@ const USER_MESSAGES_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Object} .forum The forum the discussion belongs to
  * @apiSuccess (Success (200)) {Number} .forum.id The forum id
  * @apiSuccess (Success (200)) {String} .forum.name The forum name
+ * @apiSuccess (Success (200)) {Object} .category The category the forum belongs to
+ * @apiSuccess (Success (200)) {Number} .category.id The category id
+ * @apiSuccess (Success (200)) {String} .category.name The category name
  * @apiSuccess (Success (200)) {Object} .message The message
  * @apiSuccess (Success (200)) {Number} .message.id The message id
  * @apiSuccess (Success (200)) {String} .message.message The message content
@@ -353,7 +356,14 @@ const getUserMessages = async (req, res, next) => {
         model: Discussion,
         as: 'discussion',
         attributes: ['id', 'title'],
-        include: [{ model: Forum, as: 'forum', attributes: ['id', 'name'] }]
+        include: [
+          {
+            model: Forum,
+            as: 'forum',
+            attributes: ['id', 'name'],
+            include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }]
+          }
+        ]
       }
     ],
     order: [['date', 'DESC']],
@@ -391,6 +401,10 @@ const getUserMessages = async (req, res, next) => {
     forum: {
       id: m.discussion.forum.id,
       name: m.discussion.forum.name
+    },
+    category: {
+      id: m.discussion.forum.category.id,
+      name: m.discussion.forum.category.name
     },
     message: {
       id: m.id,
