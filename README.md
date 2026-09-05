@@ -29,6 +29,10 @@ APP_URL=http://localhost:4200
 DATABASE_URL=postgresql://user:password@host/database?sslmode=require&channel_binding=require
 
 
+# Specify if the connexion to the frontend is secure
+SECURE=true
+
+
 # JWT Token secret code
 JWT_SECRET=secret
 
