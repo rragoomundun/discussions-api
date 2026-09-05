@@ -311,14 +311,16 @@ const resetPassword = async (req, res, next) => {
  * @apiPermission Private
  */
 const logout = async (req, res, next) => {
-  res
-    .cookie('token', 'none', {
-      expires: new Date(Date.now() + 10 * 1000),
-      sameSite: 'None',
-      secure: true
-    })
-    .status(httpStatus.OK)
-    .end();
+  const options = {
+    expires: new Date(Date.now() + 10 * 1000)
+  };
+
+  if (process.env.SECURE) {
+    options.sameSite = 'None';
+    options.secure = true;
+  }
+
+  res.cookie('token', 'none', options).status(httpStatus.OK).end();
 };
 
 /**
