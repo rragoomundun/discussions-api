@@ -132,4 +132,64 @@ const search = async (req, res, next) => {
   res.status(httpStatus.OK).json(result);
 };
 
-export { search };
+/**
+ * @api {GET} /search/meta Get Search Meta
+ * @apiGroup Search
+ * @apiName SearchGetSearchMeta
+ *
+ * @apiDescription Get meta information for a search query: number of pages.
+ *
+ * @apiQuery {String} query The search keyword.
+ *
+ * @apiSuccess (Success (200)) {Number} nbPages The number of search result pages (20 per page, minimum 1)
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "nbPages": 3
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Public
+ */
+const getSearchMeta = async (req, res, next) => {
+  const { query } = req.query;
+  const pattern = `%${escapeLikePattern(query)}%`;
+
+  const [{ count }] = await sequelize.query(
+    `
+    WITH title_matches AS (
+      SELECT fm.id AS "messageId"
+      FROM "Discussion" d
+      JOIN "Message" fm ON fm.id = (
+        SELECT m.id FROM "Message" m WHERE m."discussionId" = d.id ORDER BY m.date ASC LIMIT 1
+      )
+      WHERE d.title ILIKE :pattern
+    ),
+    message_matches AS (
+      SELECT m.id AS "messageId"
+      FROM "Message" m
+      WHERE m.message ILIKE :pattern
+    ),
+    combined AS (
+      SELECT DISTINCT "messageId"
+      FROM (
+        SELECT "messageId" FROM title_matches
+        UNION ALL
+        SELECT "messageId" FROM message_matches
+      ) results
+    )
+    SELECT COUNT(*)::int AS count FROM combined
+    `,
+    {
+      replacements: { pattern },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  const nbPages = Math.max(1, Math.ceil(count / SEARCH_RESULTS_PER_PAGE));
+
+  res.status(httpStatus.OK).json({ nbPages });
+};
+
+export { search, getSearchMeta };

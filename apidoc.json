@@ -58,7 +58,8 @@
     "FileUpload",
     "FileDelete",
     "Search",
-    "SearchSearch"
+    "SearchSearch",
+    "SearchGetSearchMeta"
   ],
   "template": {
     "forceLanguage": "en",

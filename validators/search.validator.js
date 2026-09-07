@@ -7,4 +7,6 @@ const searchValidator = validation([
   query('page').optional().isInt().withMessage('INVALID')
 ]);
 
-export { searchValidator };
+const searchMetaValidator = validation([query('query').notEmpty().withMessage('EMPTY')]);
+
+export { searchValidator, searchMetaValidator };
