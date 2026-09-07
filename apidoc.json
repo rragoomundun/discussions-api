@@ -56,7 +56,9 @@
     "MessageDeleteMessage",
     "File",
     "FileUpload",
-    "FileDelete"
+    "FileDelete",
+    "Search",
+    "SearchSearch"
   ],
   "template": {
     "forceLanguage": "en",
