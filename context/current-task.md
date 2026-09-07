@@ -1,15 +1,17 @@
-# Current Task
+# Current Task: Search Pages
 
-<!-- Fix name and short description -->
+Get the number of pages for a search query (GET /search/meta), so clients can paginate the /search results.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create new route `GET /search/meta`
+- Return `{ nbPages }`, the number of pages for a specific search query
 
 ## Notes
 
-<!-- Any extra notes -->
+- Should mirror the `/search` matching logic (title matches in `Discussion`, message matches in `Message`, deduped by message id) so `nbPages` is consistent with what `/search` actually paginates
+- Pages are 20 results per page, matching `/search`
