@@ -43,6 +43,7 @@ const truncateMessage = (message) => {
  * @apiSuccess (Success (200)) {Object} .user The message author
  * @apiSuccess (Success (200)) {Number} .user.id The author id
  * @apiSuccess (Success (200)) {String} .user.name The author name
+ * @apiSuccess (Success (200)) {String} .user.image The author avatar
  * @apiSuccess (Success (200)) {String} .user.role The author role
  *
  * @apiSuccessExample Success Example
@@ -52,7 +53,7 @@ const truncateMessage = (message) => {
  *     "forum": { "id": 2, "name": "General" },
  *     "category": { "id": 1, "name": "Main" },
  *     "message": { "id": 10, "message": "Hello world", "date": "2026-05-30T10:00:00.000Z" },
- *     "user": { "id": 42, "name": "John", "role": "regular" }
+ *     "user": { "id": 42, "name": "John", "image": "/uploads/avatar.jpg", "role": "regular" }
  *   }
  * ]
  *
@@ -74,7 +75,7 @@ const search = async (req, res, next) => {
         f.id AS "forumId", f.name AS "forumName",
         c.id AS "categoryId", c.name AS "categoryName",
         fm.id AS "messageId", fm.message AS "messageText", fm.date AS "messageDate",
-        u.id AS "userId", u.name AS "userName", u.role AS "userRole"
+        u.id AS "userId", u.name AS "userName", u.image AS "userImage", u.role AS "userRole"
       FROM "Discussion" d
       JOIN "Forum" f ON f.id = d."forumId"
       JOIN "Category" c ON c.id = f."categoryId"
@@ -90,7 +91,7 @@ const search = async (req, res, next) => {
         f.id AS "forumId", f.name AS "forumName",
         c.id AS "categoryId", c.name AS "categoryName",
         m.id AS "messageId", m.message AS "messageText", m.date AS "messageDate",
-        u.id AS "userId", u.name AS "userName", u.role AS "userRole"
+        u.id AS "userId", u.name AS "userName", u.image AS "userImage", u.role AS "userRole"
       FROM "Message" m
       JOIN "Discussion" d ON d.id = m."discussionId"
       JOIN "Forum" f ON f.id = d."forumId"
@@ -126,7 +127,7 @@ const search = async (req, res, next) => {
       message: truncateMessage(row.messageText),
       date: row.messageDate
     },
-    user: { id: row.userId, name: row.userName, role: row.userRole }
+    user: { id: row.userId, name: row.userName, image: row.userImage, role: row.userRole }
   }));
 
   res.status(httpStatus.OK).json(result);
