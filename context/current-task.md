@@ -1,16 +1,15 @@
-# Current Task: Add User Image to Search Results
+# Current Task
 
-For route GET /search, also return the user's image in the `user` field of each result.
+<!-- Fix name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- In the `GET /search` response, add `image` to the `user` object (alongside existing `id`, `name`, `role`)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Source: `User.image` (the author of the matched message)
-- Scope is `/search` only — `/search/meta` (which only returns `{ nbPages }`) is unaffected
+<!-- Any extra notes -->
