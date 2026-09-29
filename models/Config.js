@@ -39,6 +39,11 @@ const Config = dbUtil.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    warningLimit: {
+      type: DataTypes.INTEGER,
+      defaultValue: 10,
+      allowNull: false
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
