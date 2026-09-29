@@ -87,6 +87,7 @@ const init = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} config.lang The forum language
  * @apiSuccess (Success (200)) {Boolean} config.showTitle Whether to show the title or no
  * @apiSuccess (Success (200)) {Boolean} config.showLogo Whether to show the logo or no
+ * @apiSuccess (Success (200)) {Number} config.warningLimit The number of warnings a user can receive
  * @apiSuccess (Success (200)) {Date} config.createdAt The creation date of the forum
  * @apiSuccess (Success (200)) {Number} bottomLinks.id The id of a bottom link
  * @apiSuccess (Success (200)) {String} bottomLinks.name The name of a bottom link
@@ -104,6 +105,7 @@ const init = async (req, res, next) => {
  *     "lang": "en",
  *     "showTitle": true,
  *     "showLogo": true,
+ *     "warningLimit": 10,
  *     "createdAt": "2025-12-27 12:50:32.667+04"
  *   },
  *   "bottomLinks": [
@@ -135,6 +137,28 @@ const get = async (req, res, next) => {
   const bottomLinks = await BottomLink.findAll();
 
   res.status(httpStatus.OK).json({ config, bottomLinks });
+};
+
+/**
+ * @api {GET} /config/warning-limit Get Warning Limit
+ * @apiGroup Config
+ * @apiName ConfigGetWarningLimit
+ *
+ * @apiDescription Get the forum warning limit.
+ *
+ * @apiSuccess (Success (200)) {Number} limit The number of warnings a user can receive
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "limit": 10
+ * }
+ *
+ * @apiPermission Public
+ */
+const getWarningLimit = async (req, res, next) => {
+  const config = await Config.findOne({ attributes: ['warningLimit'] });
+
+  res.status(httpStatus.OK).json({ limit: config.warningLimit });
 };
 
 /**
@@ -241,4 +265,4 @@ const updateBottomLinks = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { exists, init, get, update, updateBottomLinks };
+export { exists, init, get, getWarningLimit, update, updateBottomLinks };

@@ -11,6 +11,7 @@
     "ConfigExists",
     "ConfigInit",
     "ConfigGet",
+    "ConfigGetWarningLimit",
     "ConfigUpdate",
     "ConfigUpdateBottomLinks",
     "Auth",
