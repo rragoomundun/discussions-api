@@ -6,6 +6,7 @@ import Category from './Category.js';
 import Forum from './Forum.js';
 import Discussion from './Discussion.js';
 import Message from './Message.js';
+import Warning from './Warning.js';
 
 const setupDBAssociations = () => {
   User.hasMany(Token, {
@@ -107,6 +108,30 @@ const setupDBAssociations = () => {
     },
     targetKey: 'id',
     as: 'editor'
+  });
+
+  User.hasMany(Warning, {
+    foreignKey: {
+      name: 'userId',
+      allowNull: false
+    },
+    sourceKey: 'id',
+    as: 'warnings'
+  });
+  Warning.belongsTo(User, {
+    foreignKey: {
+      name: 'userId',
+      allowNull: false
+    },
+    targetKey: 'id',
+    as: 'user'
+  });
+  Warning.belongsTo(User, {
+    foreignKey: {
+      name: 'moderatorId'
+    },
+    targetKey: 'id',
+    as: 'moderator'
   });
 };
 
