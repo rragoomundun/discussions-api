@@ -1,0 +1,67 @@
+import httpStatus from 'http-status-codes';
+
+import Warning from '../models/Warning.js';
+import User from '../models/User.js';
+import Config from '../models/Config.js';
+import ErrorResponse from '../classes/ErrorResponse.js';
+
+/**
+ * @api {POST} /warning Create Warning
+ * @apiGroup Warning
+ * @apiName WarningCreateWarning
+ *
+ * @apiDescription Give a warning to a user. Only moderators and the admin can create a warning. A moderator cannot warn another moderator or the admin, nobody can warn themselves, and a banned user cannot be warned. When the user's number of warnings reaches the forum warning limit, the user is banned.
+ *
+ * @apiBody {String} [message] The warning message
+ * @apiBody {Number} userId The id of the warned user
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "message": "Please stay polite.",
+ *   "userId": 12
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (400)) USER_BANNED The user is already banned
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to warn this user
+ * @apiError (Error (404)) NOT_FOUND The warned user does not exist
+ *
+ * @apiPermission Private
+ */
+const createWarning = async (req, res, next) => {
+  const { message, userId } = req.body;
+  const { id: moderatorId, role } = req.user;
+
+  if (role === 'regular' || Number(userId) === moderatorId) {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  const user = await User.findOne({ where: { id: userId } });
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (role === 'moderator' && user.role !== 'regular') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  if (user.active === false) {
+    return next(new ErrorResponse('User already banned', httpStatus.BAD_REQUEST, 'USER_BANNED'));
+  }
+
+  await Warning.create({ message, userId, moderatorId });
+
+  const nbWarnings = await Warning.count({ where: { userId } });
+  const { warningLimit } = await Config.findOne({ attributes: ['warningLimit'] });
+
+  if (nbWarnings >= warningLimit) {
+    user.active = false;
+    await user.save();
+  }
+
+  res.status(httpStatus.CREATED).end();
+};
+
+export { createWarning };

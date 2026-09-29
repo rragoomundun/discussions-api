@@ -61,7 +61,9 @@
     "FileDelete",
     "Search",
     "SearchSearch",
-    "SearchGetSearchMeta"
+    "SearchGetSearchMeta",
+    "Warning",
+    "WarningCreateWarning"
   ],
   "template": {
     "forceLanguage": "en",

@@ -11,8 +11,7 @@ const Warning = dbUtil.define(
       autoIncrement: true
     },
     message: {
-      type: DataTypes.TEXT,
-      allowNull: false
+      type: DataTypes.TEXT
     },
     date: {
       type: DataTypes.DATE,

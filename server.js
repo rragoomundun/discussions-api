@@ -55,6 +55,7 @@ import categoryRoutes from './routes/category.route.js';
 import discussionRoutes from './routes/discussion.route.js';
 import messageRoutes from './routes/message.route.js';
 import searchRoutes from './routes/search.route.js';
+import warningRoutes from './routes/warning.route.js';
 
 // Mount routers
 app.use('/api', apiRoutes);
@@ -67,6 +68,7 @@ app.use('/category', categoryRoutes);
 app.use('/discussion', discussionRoutes);
 app.use('/message', messageRoutes);
 app.use('/search', searchRoutes);
+app.use('/warning', warningRoutes);
 
 // Limit the number of requests per minute in prod mode
 if (process.env.ENV === 'production') {
