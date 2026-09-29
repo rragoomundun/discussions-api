@@ -1,16 +1,15 @@
-# Current Task: Warning Limit
+# Current Task
 
-Add a `warningLimit` field to the Config table.
+<!-- Fix name and short description -->
 
 ## Status
 
-Complete
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create a database migration adding `warningLimit` (INTEGER) to the Config table, with a default value of 10
-- Add the `warningLimit` field to the Config model
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Spec: `context/features/9-warning-limit-spec.md`
+<!-- Any extra notes -->
