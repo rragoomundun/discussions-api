@@ -14,4 +14,8 @@ const updateValidator = validation([
   body('showLogo').notEmpty().withMessage('EMPTY')
 ]);
 
-export { initValidator, updateValidator };
+const updateWarningLimitValidator = validation([
+  body('limit').notEmpty().withMessage('EMPTY').isInt({ min: 5 }).withMessage('INVALID')
+]);
+
+export { initValidator, updateValidator, updateWarningLimitValidator };

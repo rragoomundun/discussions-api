@@ -211,6 +211,31 @@ const update = async (req, res, next) => {
 };
 
 /**
+ * @api {PUT} /config/warning-limit Update Warning Limit
+ * @apiGroup Config
+ * @apiName ConfigUpdateWarningLimit
+ *
+ * @apiDescription Update the forum warning limit.
+ *
+ * @apiBody {Number{5-}} limit The number of warnings a user can receive
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "limit": 10
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS The limit is missing or is not an integer greater than or equal to 5
+ * @apiError (Error (401)) UNAUTHORIZED This user doesn't have the right to edit the configuration.
+ *
+ * @apiPermission Private
+ */
+const updateWarningLimit = async (req, res, next) => {
+  await Config.update({ warningLimit: req.body.limit }, { where: {} });
+
+  res.status(httpStatus.OK).end();
+};
+
+/**
  * @api {PUT} /config/bottom-links Update Bottom Links
  * @apiGroup Config
  * @apiName ConfigUpdateBottomLinks
@@ -265,4 +290,4 @@ const updateBottomLinks = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { exists, init, get, getWarningLimit, update, updateBottomLinks };
+export { exists, init, get, getWarningLimit, update, updateWarningLimit, updateBottomLinks };
