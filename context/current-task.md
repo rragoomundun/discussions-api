@@ -1,23 +1,15 @@
-# Current Task: Warning Table
+# Current Task
 
-Create the Warning table, which records warnings given to users by moderators.
+<!-- Fix name and short description -->
 
 ## Status
 
-Complete
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create a migration for the `Warning` table with the fields:
-  - `id` (INTEGER, primary key)
-  - `message` (TEXT)
-  - `date` (DATE, defaults to `NOW()`)
-  - `userId` (INTEGER, foreign key to `User`)
-  - `moderatorId` (INTEGER, foreign key to `User`)
-- Create the `Warning` model in `models/Warning.js`
-- Register the Warning ↔ User associations in `models/setupDBAssociations.js`
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Spec: `context/features/12-warning-table-spec.md`
-- Follow the existing `create-message-table` migration and `Message` model, which also reference `User` twice (`authorId`, `editorId`)
+<!-- Any extra notes -->
