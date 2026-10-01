@@ -45,4 +45,8 @@ const activeValidator = validation([
   body('active').notEmpty().withMessage('EMPTY').isBoolean({ strict: true }).withMessage('INVALID').toBoolean()
 ]);
 
-export { emailValidator, passwordValidator, profilePictureValidator, activeValidator };
+const roleValidator = validation([
+  body('role').notEmpty().withMessage('EMPTY').isIn(['regular', 'moderator']).withMessage('INVALID')
+]);
+
+export { emailValidator, passwordValidator, profilePictureValidator, activeValidator, roleValidator };

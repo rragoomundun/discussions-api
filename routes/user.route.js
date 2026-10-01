@@ -13,17 +13,20 @@ import {
   updatePersonalInformation,
   updateProfilePicture,
   updateSignature,
-  setActiveStatus
+  setActiveStatus,
+  setRole
 } from '../controllers/user.controller.js';
 
 import {
   emailValidator,
   passwordValidator,
   profilePictureValidator,
-  activeValidator
+  activeValidator,
+  roleValidator
 } from '../validators/user.validator.js';
 
 import authorizeMiddleware from '../middlewares/authorize.middleware.js';
+import authorizeAdminMiddleware from '../middlewares/authorizeAdmin.middleware.js';
 import authorizeModeratorAdminMiddleware from '../middlewares/authorizeModeratorAdmin.middleware.js';
 
 const router = express.Router();
@@ -41,6 +44,7 @@ router
   .put('/profile-picture', authorizeMiddleware, profilePictureValidator, updateProfilePicture)
   .put('/personal-information', authorizeMiddleware, updatePersonalInformation)
   .put('/signature', authorizeMiddleware, updateSignature)
-  .put('/:userId/active', authorizeMiddleware, authorizeModeratorAdminMiddleware, activeValidator, setActiveStatus);
+  .put('/:userId/active', authorizeMiddleware, authorizeModeratorAdminMiddleware, activeValidator, setActiveStatus)
+  .put('/:userId/role', authorizeMiddleware, authorizeAdminMiddleware, roleValidator, setRole);
 
 export default router;
