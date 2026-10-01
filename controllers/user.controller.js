@@ -91,6 +91,7 @@ const getUser = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Number} nbDiscussions The number of discussions started by the user
  * @apiSuccess (Success (200)) {Number} nbMessages The number of messages posted by the user
  * @apiSuccess (Success (200)) {Date} createdAt The created date of the account
+ * @apiSuccess (Success (200)) {Boolean} active Whether the user is active (false if banned)
  *
  * @apiSuccessExample Success Example
  * {
@@ -99,7 +100,8 @@ const getUser = async (req, res, next) => {
  *   "image": null,
  *   "nbDiscussions": 4,
  *   "nbMessages": 27,
- *   "createdAt": "2025-12-30T11:11:11.000Z"
+ *   "createdAt": "2025-12-30T11:11:11.000Z",
+ *   "active": true
  * }
  *
  * @apiError (Error (404)) NOT_FOUND The user does not exist
@@ -112,7 +114,7 @@ const getUserProfile = async (req, res, next) => {
   const [user, nbDiscussions, nbMessages] = await Promise.all([
     User.findOne({
       where: { id },
-      attributes: ['name', 'role', 'image', 'createdAt']
+      attributes: ['name', 'role', 'image', 'createdAt', 'active']
     }),
     Discussion.count({ where: { userId: id } }),
     Message.count({ where: { authorId: id } })
@@ -128,7 +130,8 @@ const getUserProfile = async (req, res, next) => {
     image: user.image,
     nbDiscussions,
     nbMessages,
-    createdAt: user.createdAt
+    createdAt: user.createdAt,
+    active: user.active
   });
 };
 
