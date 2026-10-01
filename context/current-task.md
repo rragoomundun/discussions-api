@@ -1,19 +1,15 @@
-# Current Task: Set User Role
+# Current Task
 
-Change a user's role.
+<!-- Fix name and short description -->
 
 ## Status
 
-Complete
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create route `PUT /user/:userId/role`
-- Read `role` from the body; it must be `regular` or `moderator`
-- Set the user's role; return 404 if the user doesn't exist
-- The admin's role cannot be changed (403)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Spec: `context/features/18-set-user-role-spec.md`
-- Only the administrator can change a user role
+<!-- Any extra notes -->
