@@ -1,19 +1,15 @@
-# Current Task: Messages Users Active Field
+# Current Task
 
-Return the `active` field for all users in the `getMessagesInDiscussion` and `getMessage` controllers.
+<!-- Fix name and short description -->
 
 ## Status
 
-Complete
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- In `getMessagesInDiscussion` (`GET /message/all`), return `active` for every user in each message:
-  - `author.active`
-  - `editor.active` (when the message has an editor)
-- Do the same in `getMessage` (`GET /message/:messageId`)
-- Update the endpoints documentation and regenerate it
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Inline description (no spec file)
+<!-- Any extra notes -->
