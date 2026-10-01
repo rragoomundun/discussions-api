@@ -228,7 +228,7 @@ const getMessagesInDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (201)) {Object} editor The last editor of the message
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  *
  * @apiPermission Private
  */
@@ -293,7 +293,7 @@ const postMessage = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} editor.name The editor name
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to update this message
  * @apiError (Error (404)) NOT_FOUND The message does not exist
  *
@@ -365,7 +365,7 @@ const updateMessage = async (req, res, next) => {
  *
  * @apiParam {Number} messageId The message id.
  *
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to delete this message
  * @apiError (Error (404)) NOT_FOUND The message does not exist
  *

@@ -47,7 +47,7 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  *
  * @apiPermission Private
  */
@@ -79,7 +79,7 @@ const createDiscussion = async (req, res, next) => {
  *   "title": "Updated title"
  * }
  *
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to update this discussion
  * @apiError (Error (404)) NOT_FOUND The discussion does not exist
  *
@@ -225,7 +225,7 @@ const getDiscussion = async (req, res, next) => {
  *
  * @apiParam {Number} discussionId The discussion id.
  *
- * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or is banned
  * @apiError (Error (403)) FORBIDDEN The user doesn't have permission to delete this discussion
  * @apiError (Error (404)) NOT_FOUND The discussion does not exist
  *
