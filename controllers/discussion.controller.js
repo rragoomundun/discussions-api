@@ -133,6 +133,7 @@ const updateDiscussion = async (req, res, next) => {
  * @apiSuccess (Success (200)) {Number} id The discussion id
  * @apiSuccess (Success (200)) {String} title The discussion title
  * @apiSuccess (Success (200)) {Boolean} open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Boolean} pinned Whether the discussion is pinned
  * @apiSuccess (Success (200)) {Object} forum The forum the discussion belongs to
  * @apiSuccess (Success (200)) {Number} forum.id The forum id
  * @apiSuccess (Success (200)) {String} forum.name The forum name
@@ -152,6 +153,7 @@ const updateDiscussion = async (req, res, next) => {
  *   "id": 1,
  *   "title": "My first discussion",
  *   "open": true,
+ *   "pinned": false,
  *   "createdAt": "2026-05-30T10:00:00.000Z",
  *   "forum": { "id": 2, "name": "General" },
  *   "category": { "id": 1, "name": "Main" },
@@ -169,7 +171,7 @@ const getDiscussion = async (req, res, next) => {
   const [discussion, messageCount] = await Promise.all([
     Discussion.findOne({
       where: { id: discussionId },
-      attributes: ['id', 'title', 'open', 'createdAt'],
+      attributes: ['id', 'title', 'open', 'pinned', 'createdAt'],
       include: [
         {
           model: Forum,
@@ -203,6 +205,7 @@ const getDiscussion = async (req, res, next) => {
     id: discussion.id,
     title: discussion.title,
     open: discussion.open,
+    pinned: discussion.pinned,
     createdAt: discussion.createdAt,
     forum: { id: discussion.forum.id, name: discussion.forum.name },
     category: { id: discussion.forum.category.id, name: discussion.forum.category.name },
@@ -279,6 +282,7 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiSuccess (Success (200)) {Number} .id The discussion id
  * @apiSuccess (Success (200)) {String} .title The discussion title
  * @apiSuccess (Success (200)) {Boolean} .open Whether the discussion is open
+ * @apiSuccess (Success (200)) {Boolean} .pinned Whether the discussion is pinned
  * @apiSuccess (Success (200)) {Date} .createdAt The creation date
  * @apiSuccess (Success (200)) {Object} .user The discussion author
  * @apiSuccess (Success (200)) {Number} .user.id The author id
@@ -309,7 +313,7 @@ const getDiscussionsInForum = async (req, res, next) => {
 
   const discussions = await Discussion.findAll({
     where: { forumId },
-    attributes: ['id', 'title', 'open', 'createdAt'],
+    attributes: ['id', 'title', 'open', 'pinned', 'createdAt'],
     include: [
       { model: User, as: 'user', attributes: ['id', 'name', 'role'] },
       {
@@ -369,6 +373,7 @@ const getDiscussionsInForum = async (req, res, next) => {
     id: d.id,
     title: d.title,
     open: d.open,
+    pinned: d.pinned,
     createdAt: d.createdAt,
     user: { id: d.user.id, name: d.user.name, role: d.user.role },
     forum: { id: d.forum.id, name: d.forum.name },
@@ -437,11 +442,51 @@ const setDiscussionOpen = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
+/**
+ * @api {PUT} /discussion/:discussionId/pinned Set Discussion Pinned Status
+ * @apiGroup Discussion
+ * @apiName DiscussionSetDiscussionPinned
+ *
+ * @apiDescription Set the pinned flag of a discussion. Only moderators and the admin can perform this action.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiBody {Boolean} pinned Whether the discussion is pinned.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "pinned": true
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or isn't a moderator or the admin
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Private
+ */
+const setDiscussionPinned = async (req, res, next) => {
+  const { discussionId } = req.params;
+  const { pinned } = req.body;
+
+  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  discussion.pinned = pinned;
+
+  await discussion.save();
+
+  res.status(httpStatus.OK).end();
+};
+
 export {
   createDiscussion,
   updateDiscussion,
   getDiscussion,
   deleteDiscussion,
   getDiscussionsInForum,
-  setDiscussionOpen
+  setDiscussionOpen,
+  setDiscussionPinned
 };

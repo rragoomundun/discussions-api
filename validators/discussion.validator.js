@@ -32,4 +32,14 @@ const setDiscussionOpenValidator = validation([
   body('open').notEmpty().withMessage('EMPTY').isBoolean().withMessage('INVALID')
 ]);
 
-export { createDiscussionValidator, updateDiscussionValidator, getDiscussionsInForumValidator, setDiscussionOpenValidator };
+const setDiscussionPinnedValidator = validation([
+  body('pinned').notEmpty().withMessage('EMPTY').isBoolean({ strict: true }).withMessage('INVALID').toBoolean()
+]);
+
+export {
+  createDiscussionValidator,
+  updateDiscussionValidator,
+  getDiscussionsInForumValidator,
+  setDiscussionOpenValidator,
+  setDiscussionPinnedValidator
+};
