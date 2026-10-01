@@ -64,4 +64,41 @@ const createWarning = async (req, res, next) => {
   res.status(httpStatus.CREATED).end();
 };
 
-export { createWarning };
+/**
+ * @api {DELETE} /warning/:warningId Delete Warning
+ * @apiGroup Warning
+ * @apiName WarningDeleteWarning
+ *
+ * @apiDescription Delete a warning. Only moderators and the admin can delete a warning. If the user's number of warnings drops to one below the forum warning limit, the user is unbanned.
+ *
+ * @apiParam {Number} warningId The warning id
+ *
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or isn't a moderator or the admin
+ * @apiError (Error (404)) NOT_FOUND The warning does not exist
+ *
+ * @apiPermission Private
+ */
+const deleteWarning = async (req, res, next) => {
+  const { warningId } = req.params;
+
+  const warning = await Warning.findOne({ where: { id: warningId } });
+
+  if (!warning) {
+    return next(new ErrorResponse('Warning not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  const { userId } = warning;
+
+  await warning.destroy();
+
+  const nbWarnings = await Warning.count({ where: { userId } });
+  const { warningLimit } = await Config.findOne({ attributes: ['warningLimit'] });
+
+  if (nbWarnings === warningLimit - 1) {
+    await User.update({ active: true }, { where: { id: userId } });
+  }
+
+  res.status(httpStatus.OK).end();
+};
+
+export { createWarning, deleteWarning };

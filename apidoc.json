@@ -63,7 +63,8 @@
     "SearchSearch",
     "SearchGetSearchMeta",
     "Warning",
-    "WarningCreateWarning"
+    "WarningCreateWarning",
+    "WarningDeleteWarning"
   ],
   "template": {
     "forceLanguage": "en",
