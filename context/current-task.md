@@ -1,15 +1,17 @@
-# Current Task
+# Current Task: Pinned Discussions First
 
-<!-- Fix name and short description -->
+Get pinned discussions first.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Complete
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Modify `GET /discussion/all` to return the pinned discussions first
+- Update the endpoint documentation and regenerate it
 
 ## Notes
 
-<!-- Any extra notes -->
+- Spec: `context/features/21-pinned-discussions-first-spec.md`
+- The spec says `PUT /discussion/all`, but the route is `GET /discussion/all` (`getDiscussionsInForum`)

@@ -274,7 +274,7 @@ const DISCUSSIONS_PER_PAGE = 20;
  * @apiGroup Discussion
  * @apiName DiscussionGetDiscussionsInForum
  *
- * @apiDescription Get paginated discussions in a forum, ordered by most recent last message.
+ * @apiDescription Get paginated discussions in a forum. Pinned discussions come first, then discussions are ordered by most recent last message.
  *
  * @apiQuery {Number} forumId The forum id.
  * @apiQuery {Number} [page=1] The page number.
@@ -324,6 +324,7 @@ const getDiscussionsInForum = async (req, res, next) => {
       }
     ],
     order: [
+      ['pinned', 'DESC'],
       [
         Sequelize.literal(`(SELECT MAX("date") FROM "Message" WHERE "discussionId" = "Discussion"."id")`),
         'DESC NULLS LAST'
