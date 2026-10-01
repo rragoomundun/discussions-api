@@ -7,7 +7,8 @@ import {
   deleteDiscussion,
   getDiscussionsInForum,
   setDiscussionOpen,
-  setDiscussionPinned
+  setDiscussionPinned,
+  moveDiscussion
 } from '../controllers/discussion.controller.js';
 
 import {
@@ -15,7 +16,8 @@ import {
   updateDiscussionValidator,
   getDiscussionsInForumValidator,
   setDiscussionOpenValidator,
-  setDiscussionPinnedValidator
+  setDiscussionPinnedValidator,
+  moveDiscussionValidator
 } from '../validators/discussion.validator.js';
 
 import authorizeMiddleware from '../middlewares/authorize.middleware.js';
@@ -37,6 +39,13 @@ router
     authorizeModeratorAdminMiddleware,
     setDiscussionPinnedValidator,
     setDiscussionPinned
+  )
+  .put(
+    '/:discussionId/move',
+    authorizeMiddleware,
+    authorizeModeratorAdminMiddleware,
+    moveDiscussionValidator,
+    moveDiscussion
   );
 
 export default router;

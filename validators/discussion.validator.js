@@ -20,6 +20,21 @@ const createDiscussionValidator = validation([
     })
 ]);
 
+const moveDiscussionValidator = validation([
+  body('forumId')
+    .notEmpty()
+    .withMessage('EMPTY')
+    .isInt()
+    .withMessage('INVALID')
+    .custom(async (value) => {
+      const forum = await Forum.findOne({ where: { id: value } });
+
+      if (!forum) {
+        throw new Error('NOT_FOUND');
+      }
+    })
+]);
+
 const updateDiscussionValidator = validation([
   body('title').notEmpty().withMessage('EMPTY')
 ]);
@@ -41,5 +56,6 @@ export {
   updateDiscussionValidator,
   getDiscussionsInForumValidator,
   setDiscussionOpenValidator,
-  setDiscussionPinnedValidator
+  setDiscussionPinnedValidator,
+  moveDiscussionValidator
 };
