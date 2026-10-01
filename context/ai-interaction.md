@@ -12,15 +12,15 @@
 
 This is the common workflow that we will use for every single feature/fix:
 
-1. **Document** - Document the feature in @context/current-feature.md.
+1. **Document** - Document the feature in @context/current-task.md.
 2. **Branch** - Create new branch for feature, fix, etc
-3. **Implement** - Implement the feature/fix that I create in @context/current-feature.md or @context/current-hotfix.md
+3. **Implement** - Implement the feature/fix that I create in @context/current-task.md or @context/current-hotfix.md
 4. **Iterate** - Iterate and change things if needed
 5. **Commit** - Only after build passes and everything works
 6. **Merge** - Merge to main
 7. **Delete Branch** - Delete branch after merge
 8. **Review** - Review AI-generated code periodically and on demand.
-9. Mark as completed in @context/current-feature.md or @context/current-hotfix.md and add to history
+9. Mark as completed in @context/current-task.md or @context/current-hotfix.md and add to history
 
 Do NOT commit without permission.
 

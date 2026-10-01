@@ -10,7 +10,7 @@ Read the following to get the full context of the project:
 - @context/git-flow.md
 - @context/coding-standards.md
 - @context/ai-interaction.md
-- @context/current-feature.md
+- @context/current-task.md
 
 ## Commands
 
