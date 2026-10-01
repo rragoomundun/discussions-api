@@ -6,6 +6,44 @@ import Config from '../models/Config.js';
 import ErrorResponse from '../classes/ErrorResponse.js';
 
 /**
+ * @api {GET} /warning/all Get Warnings
+ * @apiGroup Warning
+ * @apiName WarningGetWarnings
+ *
+ * @apiDescription Get all the warnings of a user, ordered newest to oldest.
+ *
+ * @apiQuery {Number} userId The user id
+ *
+ * @apiSuccess (Success (200)) {Number} id The warning id
+ * @apiSuccess (Success (200)) {String} message The warning message
+ * @apiSuccess (Success (200)) {Date} date The warning date
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *     "id": 3,
+ *     "message": "Please stay polite.",
+ *     "date": "2026-09-29T16:09:20.000Z"
+ *   }
+ * ]
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Public
+ */
+const getWarnings = async (req, res, next) => {
+  const { userId } = req.query;
+
+  const warnings = await Warning.findAll({
+    where: { userId },
+    attributes: ['id', 'message', 'date'],
+    order: [['date', 'DESC']]
+  });
+
+  res.status(httpStatus.OK).json(warnings);
+};
+
+/**
  * @api {POST} /warning Create Warning
  * @apiGroup Warning
  * @apiName WarningCreateWarning
@@ -101,4 +139,4 @@ const deleteWarning = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { createWarning, deleteWarning };
+export { getWarnings, createWarning, deleteWarning };
