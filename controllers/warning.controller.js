@@ -17,13 +17,17 @@ import ErrorResponse from '../classes/ErrorResponse.js';
  * @apiSuccess (Success (200)) {Number} id The warning id
  * @apiSuccess (Success (200)) {String} message The warning message
  * @apiSuccess (Success (200)) {Date} date The warning date
+ * @apiSuccess (Success (200)) {Object} moderator The moderator who gave the warning (null if there is none)
+ * @apiSuccess (Success (200)) {Number} moderator.id The moderator id
+ * @apiSuccess (Success (200)) {String} moderator.name The moderator name
  *
  * @apiSuccessExample Success Example
  * [
  *   {
  *     "id": 3,
  *     "message": "Please stay polite.",
- *     "date": "2026-09-29T16:09:20.000Z"
+ *     "date": "2026-09-29T16:09:20.000Z",
+ *     "moderator": { "id": 1, "name": "John" }
  *   }
  * ]
  *
@@ -37,6 +41,7 @@ const getWarnings = async (req, res, next) => {
   const warnings = await Warning.findAll({
     where: { userId },
     attributes: ['id', 'message', 'date'],
+    include: [{ model: User, as: 'moderator', attributes: ['id', 'name'] }],
     order: [['date', 'DESC']]
   });
 
