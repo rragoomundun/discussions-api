@@ -1,18 +1,15 @@
-# Current Task: Move Discussion
+# Current Task
 
-Move a discussion to another forum.
+<!-- Fix name and short description -->
 
 ## Status
 
-Complete
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create route `PUT /discussion/:discussionId/move`
-- Read `forumId` from the body (required integer of an existing forum)
-- Update the discussion's `forumId` to the new forum id; return 404 if the discussion doesn't exist
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Spec: `context/features/22-move-discussion-spec.md`
-- Only moderators or the administrator can move a discussion (`authorizeModeratorAdmin` middleware)
+<!-- Any extra notes -->
