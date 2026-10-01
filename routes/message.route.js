@@ -16,6 +16,7 @@ import {
 } from '../validators/message.validator.js';
 
 import authorizeMiddleware from '../middlewares/authorize.middleware.js';
+import activeUserMiddleware from '../middlewares/activeUser.middleware.js';
 
 const router = express.Router();
 
@@ -23,8 +24,8 @@ router
   .get('/all', getMessagesInDiscussionValidator, getMessagesInDiscussion)
   .get('/first', getFirstMessageValidator, getFirstMessage)
   .get('/:messageId', getMessage)
-  .post('/', authorizeMiddleware, postMessageValidator, postMessage)
-  .put('/:messageId', authorizeMiddleware, updateMessageValidator, updateMessage)
-  .delete('/:messageId', authorizeMiddleware, deleteMessage);
+  .post('/', authorizeMiddleware, activeUserMiddleware, postMessageValidator, postMessage)
+  .put('/:messageId', authorizeMiddleware, activeUserMiddleware, updateMessageValidator, updateMessage)
+  .delete('/:messageId', authorizeMiddleware, activeUserMiddleware, deleteMessage);
 
 export default router;

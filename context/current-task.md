@@ -1,15 +1,23 @@
-# Current Task
+# Current Task: Banned User Limitations
 
-<!-- Fix name and short description -->
+Add limitations to what a banned user can do.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Complete
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create the `activeUser` middleware: continue if the user is active, otherwise return Unauthorized
+- Add the middleware to the following routes:
+  - `POST /discussion`
+  - `PUT /discussion/:discussionId`
+  - `DELETE /discussion/:discussionId`
+  - `POST /message`
+  - `PUT /message/:messageId`
+  - `DELETE /message/:messageId`
 
 ## Notes
 
-<!-- Any extra notes -->
+- Spec: `context/features/19-banned-user-limitations-spec.md`
+- `active` is added to `req.user` in the authorize middleware so `activeUser` needs no extra query
