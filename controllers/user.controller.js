@@ -592,6 +592,50 @@ const updateSignature = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
+/**
+ * @api {PUT} /user/:userId/active Set Active Status
+ * @apiGroup User
+ * @apiName UserSetActiveStatus
+ *
+ * @apiDescription Ban or unban a user by setting their active status. Only moderators and the admin can set it, and only for a regular user.
+ *
+ * @apiParam {Number} userId The user id
+ *
+ * @apiBody {Boolean} active Whether the user is active (false bans the user)
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "active": false
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or isn't a moderator or the admin
+ * @apiError (Error (403)) FORBIDDEN The user's active status cannot be changed (moderator or admin)
+ * @apiError (Error (404)) NOT_FOUND The user does not exist
+ *
+ * @apiPermission Private
+ */
+const setActiveStatus = async (req, res, next) => {
+  const { userId } = req.params;
+  const { active } = req.body;
+
+  const user = await User.findOne({ where: { id: userId } });
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (user.role !== 'regular') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  user.active = active;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
 export {
   getUser,
   getUserProfile,
@@ -604,5 +648,6 @@ export {
   updatePassword,
   updateProfilePicture,
   updatePersonalInformation,
-  updateSignature
+  updateSignature,
+  setActiveStatus
 };

@@ -41,4 +41,8 @@ const passwordValidator = validation([
 
 const profilePictureValidator = validation([]);
 
-export { emailValidator, passwordValidator, profilePictureValidator };
+const activeValidator = validation([
+  body('active').notEmpty().withMessage('EMPTY').isBoolean({ strict: true }).withMessage('INVALID').toBoolean()
+]);
+
+export { emailValidator, passwordValidator, profilePictureValidator, activeValidator };

@@ -1,15 +1,19 @@
-# Current Task
+# Current Task: Set User Active Status
 
-<!-- Fix name and short description -->
+Set a user's `active` field.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Complete
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create route `PUT /user/:userId/active`
+- Read the `active` field from the body and validate that it is a boolean
+- Update the `active` field of the specified user; return 404 if the user doesn't exist
+- Only a regular user's status can be changed (403 for a moderator or the admin)
 
 ## Notes
 
-<!-- Any extra notes -->
+- Spec: `context/features/16-set-user-active-status-spec.md`
+- Only a moderator or the administrator can call this route
