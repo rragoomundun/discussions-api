@@ -482,6 +482,45 @@ const setDiscussionPinned = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
+/**
+ * @api {PUT} /discussion/:discussionId/move Move Discussion
+ * @apiGroup Discussion
+ * @apiName DiscussionMoveDiscussion
+ *
+ * @apiDescription Move a discussion to another forum. Only moderators and the admin can perform this action.
+ *
+ * @apiParam {Number} discussionId The discussion id.
+ *
+ * @apiBody {Number} forumId The id of the forum to move the discussion to.
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "forumId": 3
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or isn't a moderator or the admin
+ * @apiError (Error (404)) NOT_FOUND The discussion does not exist
+ *
+ * @apiPermission Private
+ */
+const moveDiscussion = async (req, res, next) => {
+  const { discussionId } = req.params;
+  const { forumId } = req.body;
+
+  const discussion = await Discussion.findOne({ where: { id: discussionId } });
+
+  if (!discussion) {
+    return next(new ErrorResponse('Discussion not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  discussion.forumId = forumId;
+
+  await discussion.save();
+
+  res.status(httpStatus.OK).end();
+};
+
 export {
   createDiscussion,
   updateDiscussion,
@@ -489,5 +528,6 @@ export {
   deleteDiscussion,
   getDiscussionsInForum,
   setDiscussionOpen,
-  setDiscussionPinned
+  setDiscussionPinned,
+  moveDiscussion
 };
