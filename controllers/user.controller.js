@@ -639,6 +639,50 @@ const setActiveStatus = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
+/**
+ * @api {PUT} /user/:userId/role Set Role
+ * @apiGroup User
+ * @apiName UserSetRole
+ *
+ * @apiDescription Set a user's role. Only the admin can set it, and the admin's own role cannot be changed.
+ *
+ * @apiParam {Number} userId The user id
+ *
+ * @apiBody {String="regular","moderator"} role The new role
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "role": "moderator"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ * @apiError (Error (401)) UNAUTHORIZED The user isn't logged in or isn't the admin
+ * @apiError (Error (403)) FORBIDDEN The user is the admin
+ * @apiError (Error (404)) NOT_FOUND The user does not exist
+ *
+ * @apiPermission Private
+ */
+const setRole = async (req, res, next) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  const user = await User.findOne({ where: { id: userId } });
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
+  }
+
+  if (user.role === 'admin') {
+    return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
+  }
+
+  user.role = role;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
 export {
   getUser,
   getUserProfile,
@@ -652,5 +696,6 @@ export {
   updateProfilePicture,
   updatePersonalInformation,
   updateSignature,
-  setActiveStatus
+  setActiveStatus,
+  setRole
 };

@@ -37,6 +37,7 @@
     "UserUpdatePersonalInformation",
     "UserUpdateSignature",
     "UserSetActiveStatus",
+    "UserSetRole",
     "Forum",
     "ForumGetForum",
     "ForumGetForumMeta",
