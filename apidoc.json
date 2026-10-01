@@ -63,6 +63,7 @@
     "SearchSearch",
     "SearchGetSearchMeta",
     "Warning",
+    "WarningGetWarnings",
     "WarningCreateWarning",
     "WarningDeleteWarning"
   ],
