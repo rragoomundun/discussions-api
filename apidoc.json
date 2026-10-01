@@ -51,6 +51,7 @@
     "DiscussionUpdateDiscussion",
     "DiscussionDeleteDiscussion",
     "DiscussionSetDiscussionOpen",
+    "DiscussionSetDiscussionPinned",
     "Message",
     "MessageGetFirstMessage",
     "MessageGetMessage",

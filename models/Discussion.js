@@ -19,6 +19,11 @@ const Discussion = dbUtil.define(
       allowNull: false,
       defaultValue: true
     },
+    pinned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
