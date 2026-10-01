@@ -48,7 +48,7 @@ const getWarnings = async (req, res, next) => {
  * @apiGroup Warning
  * @apiName WarningCreateWarning
  *
- * @apiDescription Give a warning to a user. Only moderators and the admin can create a warning. A moderator cannot warn another moderator or the admin, nobody can warn themselves, and a banned user cannot be warned. When the user's number of warnings reaches the forum warning limit, the user is banned.
+ * @apiDescription Give a warning to a user. Only moderators and the admin can create a warning. Only regular users can be warned (a moderator or the admin cannot be warned), nobody can warn themselves, and a banned user cannot be warned. When the user's number of warnings reaches the forum warning limit, the user is banned.
  *
  * @apiBody {String} [message] The warning message
  * @apiBody {Number} userId The id of the warned user
@@ -81,7 +81,7 @@ const createWarning = async (req, res, next) => {
     return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND, 'NOT_FOUND'));
   }
 
-  if (role === 'moderator' && user.role !== 'regular') {
+  if (user.role !== 'regular') {
     return next(new ErrorResponse('Forbidden', httpStatus.FORBIDDEN, 'FORBIDDEN'));
   }
 
