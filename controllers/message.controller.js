@@ -81,9 +81,11 @@ const getFirstMessage = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} author.signature The author signature
  * @apiSuccess (Success (200)) {String} author.role The author role
  * @apiSuccess (Success (200)) {Boolean} author.isStarter Whether the author started the discussion
+ * @apiSuccess (Success (200)) {Boolean} author.active Whether the author is active (false if banned)
  * @apiSuccess (Success (200)) {Object} editor The last editor of the message
  * @apiSuccess (Success (200)) {Number} editor.id The editor id
  * @apiSuccess (Success (200)) {String} editor.name The editor name
+ * @apiSuccess (Success (200)) {Boolean} editor.active Whether the editor is active (false if banned)
  *
  * @apiError (Error (404)) NOT_FOUND The message cannot be found
  *
@@ -98,12 +100,12 @@ const getMessage = async (req, res, next) => {
       {
         model: User,
         as: 'author',
-        attributes: ['id', 'name', 'image', 'signature', 'role']
+        attributes: ['id', 'name', 'image', 'signature', 'role', 'active']
       },
       {
         model: User,
         as: 'editor',
-        attributes: ['id', 'name'],
+        attributes: ['id', 'name', 'active'],
         required: false
       }
     ]
@@ -138,9 +140,11 @@ const getMessage = async (req, res, next) => {
  * @apiSuccess (Success (200)) {String} author.signature The author signature
  * @apiSuccess (Success (200)) {String} author.role The author role
  * @apiSuccess (Success (200)) {Boolean} author.isStarter Whether the author started the discussion
+ * @apiSuccess (Success (200)) {Boolean} author.active Whether the author is active (false if banned)
  * @apiSuccess (Success (200)) {Object} editor The last editor of the message
  * @apiSuccess (Success (200)) {Number} editor.id The editor id
  * @apiSuccess (Success (200)) {String} editor.name The editor name
+ * @apiSuccess (Success (200)) {Boolean} editor.active Whether the editor is active (false if banned)
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
  *
@@ -159,12 +163,12 @@ const getMessagesInDiscussion = async (req, res, next) => {
         {
           model: User,
           as: 'author',
-          attributes: ['id', 'name', 'image', 'signature', 'role']
+          attributes: ['id', 'name', 'image', 'signature', 'role', 'active']
         },
         {
           model: User,
           as: 'editor',
-          attributes: ['id', 'name'],
+          attributes: ['id', 'name', 'active'],
           required: false
         }
       ],
@@ -189,9 +193,10 @@ const getMessagesInDiscussion = async (req, res, next) => {
       image: m.author.image,
       signature: m.author.signature,
       role: m.author.role,
-      isStarter: m.author.id === starterUserId
+      isStarter: m.author.id === starterUserId,
+      active: m.author.active
     },
-    editor: m.editor ? { id: m.editor.id, name: m.editor.name } : null
+    editor: m.editor ? { id: m.editor.id, name: m.editor.name, active: m.editor.active } : null
   }));
 
   res.status(httpStatus.OK).json(result);
