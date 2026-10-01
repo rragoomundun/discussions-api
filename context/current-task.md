@@ -1,15 +1,17 @@
-# Current Task
+# Current Task: Warning Roles
 
-<!-- Fix name and short description -->
+Limit who can get a warning.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Complete
 
 ## Goals
 
-<!-- Goals and requirements -->
+- In the `createWarning` controller, only allow warnings to be given to a regular user
+- A warning cannot be given to a moderator or the administrator (whoever gives it)
 
 ## Notes
 
-<!-- Any extra notes -->
+- Spec: `context/fixes/4-warning-roles-spec.md`
+- Currently only moderators are prevented from warning moderators/admin; the admin can still warn a moderator
